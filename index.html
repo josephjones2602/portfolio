@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copywriter Portfolio | Creative Track</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #1b1a17;
+      --bg-mid: #2a2924;
+      --bg-light: #3b3a33;
+      --parchment: #e6dcc8;
+      --accent: #b08d57;
+      --accent-dark: #7a5c2e;
+      --text-main: #f5f2ea;
+      --text-muted: #c9c3b5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 0.5px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ---------- Parallax Hero / About ---------- */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background-image: url('https://images.unsplash.com/photo-1506806732259-39c2d0268443');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+      z-index: 1;
+      animation: fadeUp 1.2s ease-out forwards;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* ---------- Sections ---------- */
+    section {
+      padding: 5rem 8vw;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--accent-dark);
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    /* ---------- Brand Groups ---------- */
+    .brand {
+      margin-bottom: 4rem;
+      background: linear-gradient(145deg, var(--bg-mid), var(--bg-light));
+      border: 1px solid var(--accent-dark);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      animation: fadeUp 1s ease forwards;
+    }
+
+    .brand h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+
+    .ads {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+
+    .ad-card {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--accent-dark);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+
+    .ad-card h4 {
+      margin-bottom: 0.5rem;
+    }
+
+    .ad-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .ad-card iframe,
+    .ad-card audio {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .pdf-link {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      background: var(--accent-dark);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+
+    .pdf-link:hover {
+      background: var(--accent);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: #141310;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ---------- Animations ---------- */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero / About Me -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Joseph Jones</h1>
+      <p>
+        Advertising copywriter in the creative track, forging modern brand stories with
+        old‑world texture. I specialize in concept‑driven copy, audio storytelling,
+        and long‑form persuasion grounded in human truth.
+      </p>
+    </div>
+  </header>
+
+  <!-- Portfolio Section -->
+  <section>
+    <h2 class="section-title">Selected Work</h2>
+
+    <!-- Brand Group -->
+    <div class="brand">
+      <h3>Brand: Ironwood Outfitters</h3>
+      <div class="ads">
+        <div class="ad-card">
+          <h4>Print Campaign</h4>
+          <p>Long‑form manifesto ad exploring endurance and heritage.</p>
+          <a class="pdf-link" href="assets/ironwood-print.pdf" target="_blank">View PDF</a>
+        </div>
+
+        <div class="ad-card">
+          <h4>Radio Spot</h4>
+          <p>30‑second audio narrative recorded with natural ambience.</p>
+          <audio controls src="assets/ironwood-radio.mp3"></audio>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand Group -->
+    <div class="brand">
+      <h3>Brand: Hearth & Grain</h3>
+      <div class="ads">
+        <div class="ad-card">
+          <h4>YouTube Pre‑Roll</h4>
+          <p>Concept‑driven video ad focusing on ritual and warmth.</p>
+          <iframe height="180" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+        </div>
+
+        <div class="ad-card">
+          <h4>Digital Copy Deck</h4>
+          <p>Landing‑page and headline system for product launch.</p>
+          <a class="pdf-link" href="assets/hearth-grain-copy.pdf" target="_blank">View PDF</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+    © 2025 Joseph Jones · Advertising Copywriter · Creative Track
+  </footer>
+
+  <script>
+    // Simple reveal-on-scroll effect
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.brand').forEach(el => {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(40px)';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
