@@ -471,6 +471,113 @@
         text-align: center;
       }
     }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 4vw;
+      }
+
+      nav a {
+        font-size: 0.8rem;
+        margin: 0 0.5rem;
+      }
+
+      .hero {
+        height: 90vh;
+        padding: 1rem;
+      }
+
+      .profile-pic {
+        width: 200px;
+        height: 260px;
+      }
+
+      .bio-text {
+        padding: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      section {
+        padding: 3rem 4vw;
+      }
+
+      .brand {
+        padding: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .ad-card {
+        padding: 1.5rem;
+      }
+
+      .video-carousel {
+        gap: 1rem;
+      }
+
+      #videoFrame {
+        width: 100%;
+        height: 250px;
+      }
+
+      .carousel-indicators {
+        gap: 0.5rem;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav a {
+        font-size: 0.7rem;
+        margin: 0 0.3rem;
+      }
+
+      .hero-content {
+        gap: 2rem;
+      }
+
+      .profile-pic {
+        width: 150px;
+        height: 200px;
+      }
+
+      .bio-text {
+        padding: 1rem;
+      }
+
+      .bio-text h1 {
+        font-size: 1.8rem;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .brand h3 {
+        font-size: 1.6rem;
+      }
+
+      .ad-card h4 {
+        font-size: 1rem;
+      }
+
+      .image-modal img,
+      .radio-spot-modal img {
+        max-width: 95vw;
+        max-height: 70vh;
+      }
+
+      .radio-spot-modal audio {
+        width: 95vw;
+      }
+    }
   </style>
 </head>
 
@@ -707,6 +814,37 @@
     function nextVideo() {
       showVideo((videoIndex + 1) % videos.length);
     }
+
+    // Mobile optimization: Swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    function handleSwipe(element, prevFunc, nextFunc) {
+      element.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+
+      element.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleGesture(prevFunc, nextFunc);
+      });
+    }
+
+    function handleGesture(prevFunc, nextFunc) {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        nextFunc();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        prevFunc();
+      }
+    }
+
+    // Add swipe to modals
+    document.addEventListener('DOMContentLoaded', () => {
+      handleSwipe(document.getElementById('imageModal'), () => prevImage({ stopPropagation: () => {} }), () => nextImage({ stopPropagation: () => {} }));
+      handleSwipe(document.getElementById('radioSpotModal'), () => prevRadio({ stopPropagation: () => {} }), () => nextRadio({ stopPropagation: () => {} }));
+    });
   </script>
 
 </body>
