@@ -452,6 +452,150 @@
       right: 20px;
     }
 
+    /* ================== REALISTIC BOOK ================== */
+    .book-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 3.5rem;
+    }
+
+    .book-link {
+      text-decoration: none;
+      perspective: 1600px;
+    }
+
+    .book {
+      position: relative;
+      width: 240px;
+      height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    /* Subtle open angle */
+    .book-link:hover .book {
+      transform: rotateY(-22deg) translateY(-4px);
+    }
+
+    /* ================== COVER ================== */
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.15), transparent 40%),
+        linear-gradient(145deg, #8f6a3a, #5c4322);
+      border-radius: 6px 10px 10px 6px;
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+        inset -6px 0 12px rgba(0, 0, 0, 0.35);
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    .book-link:hover .book-cover {
+      transform: rotateY(-34deg);
+    }
+
+    /* ================== SPINE ================== */
+    .book-spine {
+      position: absolute;
+      left: -12px;
+      top: 0;
+      width: 10px;
+      height: 100%;
+      background:
+        linear-gradient(to right,
+          #3a2a14,
+          #2a1e0f);
+      transform: rotateY(70deg);
+      transform-origin: right;
+      box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Spine text */
+    .book-spine::after {
+      
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d6c4a2;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      transform: rotate(90deg);
+      opacity: 0.85;
+    }
+
+    /* ================== PAGES ================== */
+    .book-pages {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      bottom: 6px;
+      left: 10px;
+      background:
+        repeating-linear-gradient(to bottom,
+          #f6f2e8 0px,
+          #f6f2e8 2px,
+          #ede7d8 3px);
+      border-radius: 4px 8px 8px 4px;
+      box-shadow:
+        inset -6px 0 10px rgba(0, 0, 0, 0.25),
+        2px 0 6px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Slight page fan */
+    .book-pages::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right,
+          rgba(0, 0, 0, 0.15),
+          transparent 20%);
+    }
+
+    /* ================== COVER CONTENT ================== */
+    .book-title {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: #f5f2ea;
+      text-align: center;
+    }
+
+    .book-title h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .book-title p {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      opacity: 0.85;
+    }
+
+    /* ================== MICRO DETAILS ================== */
+    .book::after {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      filter: blur(20px);
+      background: rgba(0, 0, 0, 0.35);
+      z-index: -1;
+    }
+
+
+
     /* ================== ANIMATIONS ================== */
     @keyframes fadeUp {
       from {
@@ -585,8 +729,13 @@
 
   <nav>
     <a href="#hero">Home</a>
-    <a href="#portfolio">Work</a>
-    <a href="#videos">Videos</a>
+    <a href="#targeted-campaigns">Targeted Campaigns</a>
+    <a href="#print-campaign">Print Campaign</a>
+    <a href="#360-campaign">360 Campaign</a>
+    <a href="#prod-media-element">Videos</a>
+    <a href="#best-one-off">Showcase</a>
+    <a href="#passion-project">My Passion Project</a>
+    <a href="#breadth-of-work">Breadth of Work</a>
     <a href="#contact">Contact</a>
   </nav>
 
@@ -604,7 +753,7 @@
     </div>
   </header>
 
-  <section id="portfolio">
+  <section id="targeted-campaigns">
     <h2 class="section-title">Brand Campaigns</h2>
 
     <div class="brand">
@@ -672,6 +821,44 @@
       <span class="dot" onclick="showVideo(1)"></span>
       <span class="dot" onclick="showVideo(2)"></span>
     </div>
+  </section>
+
+  <section id="print-campaign">
+
+  </section>
+
+  <section id="360-campaign">
+
+  </section>
+
+  <section id="prod-media-elelment">
+
+  </section>
+
+  <section id="passion-project">
+    <h2 class="section-title">My Passion Project</h2>
+
+    <div class="book-wrapper">
+      <a href="https://editor.reedsy.com/s/slzRlN7" target="_blank" rel="noopener noreferrer" class="book-link"
+        aria-label="Open Passion Project Book">
+        <div class="book">
+          <div class="book-spine"></div>
+          <div class="book-pages"></div>
+
+          <div class="book-cover">
+            <div class="book-title">
+              <h3>Foreign Exchange in Hell</h3>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+
+  </section>
+
+  <section id="breadth-of-work">
+
   </section>
 
   <section id="contact">
@@ -842,8 +1029,8 @@
 
     // Add swipe to modals
     document.addEventListener('DOMContentLoaded', () => {
-      handleSwipe(document.getElementById('imageModal'), () => prevImage({ stopPropagation: () => {} }), () => nextImage({ stopPropagation: () => {} }));
-      handleSwipe(document.getElementById('radioSpotModal'), () => prevRadio({ stopPropagation: () => {} }), () => nextRadio({ stopPropagation: () => {} }));
+      handleSwipe(document.getElementById('imageModal'), () => prevImage({ stopPropagation: () => { } }), () => nextImage({ stopPropagation: () => { } }));
+      handleSwipe(document.getElementById('radioSpotModal'), () => prevRadio({ stopPropagation: () => { } }), () => nextRadio({ stopPropagation: () => { } }));
     });
   </script>
 
