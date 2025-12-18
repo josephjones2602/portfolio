@@ -110,6 +110,20 @@
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.85));
     }
 
+    .hero-identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .hero-name {
+      font-size: 2.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
     .hero-content {
       position: relative;
       z-index: 1;
@@ -516,7 +530,7 @@
 
     /* Spine text */
     .book-spine::after {
-      
+
       position: absolute;
       inset: 0;
       display: flex;
@@ -594,7 +608,484 @@
       z-index: -1;
     }
 
+    /* ================== 360 CAMPAIGN ================== */
 
+    #360-campaign h3 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+
+    /* HERO IMAGE */
+    .campaign-hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+      margin-bottom: 5rem;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    }
+
+    .campaign-hero img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* ================== CAMPAIGN SLIDER ================== */
+
+    .campaign-carousel {
+      height: 80vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 5rem;
+    }
+
+    .carousel-viewport {
+      height: 100%;
+      width: 80%;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(.4, .0, .2, 1);
+    }
+
+    .carousel-track img {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* 👈 key line */
+      object-position: center;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+
+    /* ARROWS */
+    .campaign-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2.5rem;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--text-main);
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem 0.8rem;
+      border-radius: 50%;
+      z-index: 10;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .campaign-arrow:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    .campaign-arrow.prev {
+      left: 2%;
+    }
+
+    .campaign-arrow.next {
+      right: 2%;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .carousel-viewport {
+        width: 95%;
+      }
+    }
+
+
+    /* PHONE MOCKUP */
+    .phone-section {
+      margin-bottom: 5rem;
+    }
+
+    .phone {
+      width: 280px;
+      height: 560px;
+      margin: 0 auto;
+      border-radius: 40px;
+      background: linear-gradient(145deg, #111, #2a2a2a);
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+      position: relative;
+      padding: 18px;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 22px;
+      background: #000;
+      border-radius: 0 0 14px 14px;
+      z-index: 5;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    /* ================== PHONE SLIDER ================== */
+
+    .phone-carousel-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-screen {
+      overflow: hidden;
+    }
+
+    .phone-carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(.4, .0, .2, 1);
+    }
+
+    .phone-carousel-track img {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* PHONE ARROWS */
+    .phone-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2.2rem;
+      background: rgba(0, 0, 0, 0.55);
+      color: var(--text-main);
+      border: none;
+      cursor: pointer;
+      padding: 0.3rem 0.7rem;
+      border-radius: 50%;
+      z-index: 10;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .phone-arrow:hover {
+      background: rgba(0, 0, 0, 0.85);
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    .phone-arrow.prev {
+      left: -60px;
+    }
+
+    .phone-arrow.next {
+      right: -60px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .phone-arrow.prev {
+        left: -35px;
+      }
+
+      .phone-arrow.next {
+        right: -35px;
+      }
+    }
+
+
+    /* BRAND EXTENSION IMAGES */
+    .campaign-brand .ads {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .campaign-brand img {
+      width: 45%;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s ease;
+    }
+
+    .campaign-brand img:hover {
+      transform: scale(1.05);
+    }
+
+    /* ================== PROD MEDIA ELEMENT ================== */
+
+    #prod-media-element {
+      background: linear-gradient(145deg, var(--bg-mid), var(--bg-light));
+    }
+
+    .prod-media-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    .prod-video-card {
+      width: 100%;
+      max-width: 960px;
+      padding: 2.5rem;
+      border-radius: 22px;
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px var(--accent-dark);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .prod-video-card:hover {
+      transform: translateY(-8px);
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.65),
+        inset 0 0 0 1px var(--accent);
+    }
+
+    /* Responsive 16:9 video */
+    .video-responsive {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .video-responsive iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .prod-video-card {
+        padding: 1.5rem;
+      }
+    }
+
+    /* ================== FILING CABINET ================== */
+
+    .cabinet-stage {
+      display: flex;
+      justify-content: center;
+      perspective: 1400px;
+      margin-bottom: 5rem;
+      ;
+    }
+
+    .filing-cabinet {
+      width: 320px;
+      height: 420px;
+      background: linear-gradient(145deg, #2b2a25, #1e1d19);
+      border-radius: 10px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+      cursor: pointer;
+    }
+
+    .filing-cabinet.zoom {
+      transform: scale(1.15) translateZ(80px);
+    }
+
+    /* DRAWERS */
+    .drawer {
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      background: linear-gradient(145deg, #33322c, #24231f);
+      transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    .drawer:last-child {
+      border-bottom: none;
+    }
+
+    .drawer-handle {
+      width: 80px;
+      height: 12px;
+      background: linear-gradient(to bottom, #cbb58a, #8a6a3b);
+      border-radius: 6px;
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    /* OPEN STATE */
+    .drawer.open {
+      transform: translateZ(120px) translateY(10px);
+    }
+
+    /* ================== FOLDERS ================== */
+
+    .folders {
+      display: flex;
+      justify-content: space-around;
+      height: 92px;
+      gap: 0.6rem;
+      padding: 3.2rem 1rem 1rem;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: all 0.6s ease;
+    }
+
+    .drawer.open .folders {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* FOLDER */
+    .folder {
+      width: 62px;
+      height: 140px;
+      background: linear-gradient(145deg, #f0e7d6, #d6c7a8);
+      border-radius: 4px 4px 6px 6px;
+      position: relative;
+      /* changed from relative */
+      bottom: 80px;
+      /* aligns the bottom of folder with parent */
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      display: flex;
+      align-items: center;
+      /* make label start at bottom */
+      justify-content: center;
+      padding-bottom: 8px;
+      /* space for label */
+    }
+
+    /* TAB */
+    .folder::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 6px;
+      width: 15px;
+      height: 14px;
+      background: linear-gradient(145deg, #e4d3ae, #c2a76e);
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* LABEL */
+    .folder span {
+      writing-mode: vertical-rl;
+      /* make text vertical */
+      text-orientation: mixed;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #3a2a14;
+      text-align: center;
+      display: block;
+    }
+
+
+    .folder:hover {
+      transform: translateY(-10px) rotate(-1deg);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+    }
+
+
+    /* ================== BEST ONE-OFF SECTION ================== */
+    #best-one-off {
+      position: relative;
+      padding: 6rem 8vw;
+      background: var(--bg-dark);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spotlight-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .highlighted-image {
+      width: 60%;
+      max-width: 600px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 200, 87, 0.4);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .highlighted-image:hover {
+      transform: scale(1.05);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 200, 87, 0.6);
+    }
+
+    .spotlight {
+      flex: 1;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 200, 87, 0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      transform: scaleX(1.5);
+      transition: all 0.5s ease;
+    }
+
+    .spotlight:first-child {
+      margin-right: -100px;
+    }
+
+    .spotlight:last-child {
+      margin-left: -100px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .highlighted-image {
+        width: 70%;
+      }
+
+      .spotlight-wrapper {
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .highlighted-image {
+        width: 90%;
+      }
+
+      .spotlight {
+        display: none;
+      }
+    }
 
     /* ================== ANIMATIONS ================== */
     @keyframes fadeUp {
@@ -729,31 +1220,43 @@
 
   <nav>
     <a href="#hero">Home</a>
-    <a href="#targeted-campaigns">Targeted Campaigns</a>
     <a href="#print-campaign">Print Campaign</a>
     <a href="#360-campaign">360 Campaign</a>
     <a href="#prod-media-element">Videos</a>
-    <a href="#best-one-off">Showcase</a>
     <a href="#passion-project">My Passion Project</a>
     <a href="#breadth-of-work">Breadth of Work</a>
+    <a href="#best-one-off">Showcase</a>
     <a href="#contact">Contact</a>
   </nav>
 
   <header class="hero" id="hero">
     <div class="hero-content">
-      <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" class="profile-pic">
+      <div class="hero-identity">
+        <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" class="profile-pic">
+        <h1 class="hero-name">Joseph Jones</h1>
+      </div>
       <div class="bio-text">
-        <h1>Joseph Jones</h1>
         <p>
-          Advertising copywriter specializing in concept-driven storytelling, audio persuasion, and modern brand
-          myth-making.
+          I like to set people on fire. Especially when I can watch their eyes. Good ideas make eye
+          contact inevitable. When everyone says “woah, it’s perfect,” and we all hip, fist, or mouth bump,
+          then I know I’ve done well. That’s why I choose advertising; setting other people on fire also sets
+          me on fire.<br><br>
+          There are several ways to set someone on fire. Want to know the best way? Get a match.
+          Interview someone for two hours about matches. Hunt through Reddit, attics, dictionaries. Burn
+          down buildings. Work until you find an insight. The best way to set someone on fire is to make
+          people say “I know exactly what he’s talking about.” To that end, I do my research. I can start
+          with nothing and end up with a fully fleshed campaign because I listen to human experience. My
+          end goal is to inspire people to live better. No, to be on fire about living better.
+          TLDR: ring true. Like a fire alarm.<br><br>
+          I’m always looking for ways to improve or collaborate. Contact me at my email and I’ll get back
+          to you as quickly as I can.
         </p>
-        <a href="static/resume.pdf" class="resume-btn" target="_blank">View Resume</a>
+        <a href="#contact" class="resume-btn" target="_blank">Contact Me</a>
       </div>
     </div>
   </header>
 
-  <section id="targeted-campaigns">
+  <section id="print-campaign">
     <h2 class="section-title">Brand Campaigns</h2>
 
     <div class="brand">
@@ -762,10 +1265,10 @@
         <div class="ad-card">
           <h4>Print Campaign</h4>
           <div class="image-group"
-            onclick="openImage(['static/images/OldBay/OldBay1.png','static/images/OldBay/OldBay2.png','static/images/OldBay/OldBay3.png'],0)">
-            <img src="static/images/OldBay/OldBay1.png" class="image-preview">
-            <img src="static/images/OldBay/OldBay2.png" class="image-preview">
-            <img src="static/images/OldBay/OldBay3.png" class="image-preview">
+            onclick="openImage(['static/images/OldBay/OldBayJanice.png','static/images/OldBay/OldBayJimmy.png','static/images/OldBay/OldBayMace.png'],0)">
+            <img src="static/images/OldBay/OldBayJanice.png" class="image-preview">
+            <img src="static/images/OldBay/OldBayJimmy.png" class="image-preview">
+            <img src="static/images/OldBay/OldBayMace.png" class="image-preview">
           </div>
         </div>
         <div class="ad-card">
@@ -808,36 +1311,77 @@
     </div>
   </section>
 
-  <section id="videos">
-    <h2 class="section-title">Videos</h2>
-    <div class="video-carousel">
-      <button class="carousel-prev" onclick="prevVideo()">❮</button>
-      <iframe id="videoFrame" width="560" height="315" src="https://www.youtube.com/embed/aj2O1b4KZ3M"
-        allowfullscreen></iframe>
-      <button class="carousel-next" onclick="nextVideo()">❯</button>
-    </div>
-    <div class="carousel-indicators">
-      <span class="dot active" onclick="showVideo(0)"></span>
-      <span class="dot" onclick="showVideo(1)"></span>
-      <span class="dot" onclick="showVideo(2)"></span>
-    </div>
-  </section>
-
-  <section id="print-campaign">
-
-  </section>
-
   <section id="360-campaign">
+    <h2 class="section-title">Patagonia 360° Campaign</h2>
 
+    <!-- HERO IMAGE -->
+    <div class="campaign-hero">
+      <img src="static/images/Patagonia360/EscAdd.jpeg" alt="360 Campaign Hero">
+    </div>
+
+    <!-- DESKTOP / OOH CAROUSEL -->
+    <div class="campaign-carousel">
+      <button class="campaign-arrow prev" aria-label="Previous slide">&#10094;</button>
+
+      <div class="carousel-viewport">
+        <div class="carousel-track">
+          <img src="static/images/Patagonia360/poster1.png" alt="">
+          <img src="static/images/Patagonia360/poster2.png" alt="">
+          <img src="static/images/Patagonia360/poster3.png" alt="">
+        </div>
+      </div>
+
+      <button class="campaign-arrow next" aria-label="Next slide">&#10095;</button>
+    </div>
+
+
+    <!-- PHONE MOCKUP -->
+    <div class="phone-section">
+      <div class="phone-carousel-wrapper">
+        <button class="phone-arrow prev">&#10094;</button>
+
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-carousel-track">
+              <img src="static/images/Patagonia360/mobile1.png" alt="">
+              <img src="static/images/Patagonia360/mobile2.png" alt="">
+              <img src="static/images/Patagonia360/mobile3.png" alt="">
+            </div>
+          </div>
+        </div>
+
+        <button class="phone-arrow next">&#10095;</button>
+      </div>
+    </div>
+
+    <div class="ads">
+      <div class="ad-card">
+        <h4>Radio and TV Spots</h4>
+        <div class="image-group"
+          onclick="openImage(['static/images/Patagonia360/radio.png','static/images/Patagonia360/TV.png'],0)">
+          <img src="static/images/Patagonia360/radio.png" class="image-preview">
+          <img src="static/images/Patagonia360/TV.png" class="image-preview">
+        </div>
+      </div>
   </section>
 
-  <section id="prod-media-elelment">
-
+  <section id="prod-media-element">
+    <h2 class="section-title">Hinge Video Add</h2>
+    <div class="prod-media-wrapper">
+      <div class="prod-video-card">
+        <div class="video-responsive">
+          <iframe src="https://www.youtube.com/embed/wHKXKOennJc" title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="passion-project">
     <h2 class="section-title">My Passion Project</h2>
-
     <div class="book-wrapper">
       <a href="https://editor.reedsy.com/s/slzRlN7" target="_blank" rel="noopener noreferrer" class="book-link"
         aria-label="Open Passion Project Book">
@@ -853,13 +1397,80 @@
         </div>
       </a>
     </div>
-
-
   </section>
 
   <section id="breadth-of-work">
+    <h2 class="section-title">Breadth of Work</h2>
+
+    <div class="cabinet-stage">
+      <div class="filing-cabinet" id="cabinet">
+        <!-- TOP DRAWER -->
+        <div class="drawer" data-drawer="0">
+          <div class="drawer-handle"></div>
+        </div>
+
+        <!-- MIDDLE DRAWER (ACTIVE) -->
+        <div class="drawer active" data-drawer="1">
+          <div class="drawer-handle"></div>
+
+          <!-- FOLDERS -->
+          <div class="folders">
+            <div class="folder" data-pdf="static/images/BreadthOfWork/EngagingTheBloodyClownOpinonPiece.pdf">
+              <span>Engaging the Bloody Clown - Opinon Piece</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/BrimmingWithSquirrels.pdf">
+              <span>Brimming With Squirrels</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/FracturedFairyTaleLittleRedRobinHood.pdf">
+              <span>Fractured Fairy Tale - Little Red Robin Hood</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/AdvertisingApplicationPortfolio.pdf">
+              <span>Advertising Application Portfolio</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/DesignPortfolio.pdf">
+              <span>Design Portfolio</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/MagazinePublication.pdf">
+              <span>Magazine Publication</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/JustEnjoyShortStory.pdf">
+              <span>Just Enjoy - Short Story</span>
+            </div>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/ShunaShortStory.pdf">
+              <span>Shuna - Short Story</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM DRAWER -->
+        <div class="drawer" data-drawer="2">
+          <div class="drawer-handle"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ads">
+      <div class="ad-card">
+        <h4>Miscellaneous Work</h4>
+        <div class="image-group"
+          onclick="openImage(['static/images/BreadthOfWork/SocietyInfluence MediaConferencePoster.png','static/images/BreadthOfWork/MediaMeCollage.png','static/images/BreadthOfWork/7MoreDays.png'],0)">
+          <img src="static/images/BreadthOfWork/SocietyInfluence MediaConferencePoster.png" class="image-preview">
+          <img src="static/images/BreadthOfWork/MediaMeCollage.png" class="image-preview">
+          <img src="static/images/BreadthOfWork/7MoreDays.png" class="image-preview">
+        </div>
+      </div>
 
   </section>
+
+  <section id="best-one-off">
+    <h2 class="section-title">Showcase Work</h2>
+    <div class="spotlight-wrapper">
+      <div class="spotlight"></div>
+      <img src="static/images/BestOneOff/example.png" alt="Best One-Off Image" class="highlighted-image">
+      <div class="spotlight"></div>
+    </div>
+  </section>
+
 
   <section id="contact">
     <h2 class="section-title">Contact</h2>
@@ -1026,6 +1637,79 @@
         prevFunc();
       }
     }
+
+    const track = document.querySelector('.campaign-carousel .carousel-track');
+    const slides = Array.from(track.children);
+    const prevBtn = document.querySelector('.campaign-arrow.prev');
+    const nextBtn = document.querySelector('.campaign-arrow.next');
+
+    let currentSlide = 0;
+
+    function updateCarousel() {
+      const offset = -currentSlide * 100;
+      track.style.transform = `translateX(${offset}%)`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
+    });
+
+    const phoneTrack = document.querySelector('.phone-carousel-track');
+    const phoneSlides = Array.from(phoneTrack.children);
+    const phonePrev = document.querySelector('.phone-arrow.prev');
+    const phoneNext = document.querySelector('.phone-arrow.next');
+
+    let phoneIndex = 0;
+
+    function updatePhoneCarousel() {
+      phoneTrack.style.transform = `translateX(-${phoneIndex * 100}%)`;
+    }
+
+    phonePrev.addEventListener('click', () => {
+      phoneIndex = (phoneIndex - 1 + phoneSlides.length) % phoneSlides.length;
+      updatePhoneCarousel();
+    });
+
+    phoneNext.addEventListener('click', () => {
+      phoneIndex = (phoneIndex + 1) % phoneSlides.length;
+      updatePhoneCarousel();
+    });
+
+    const cabinet = document.getElementById('cabinet');
+    const drawers = document.querySelectorAll('.drawer');
+    const folders = document.querySelectorAll('.folder');
+
+    // Click cabinet → open middle drawer + zoom
+    cabinet.addEventListener('click', () => {
+      cabinet.classList.toggle('zoom');
+
+      drawers.forEach(drawer => drawer.classList.remove('open'));
+      const middleDrawer = document.querySelector('.drawer[data-drawer="1"]');
+      middleDrawer.classList.add('open');
+    });
+
+    // Folder click → open PDF
+    folders.forEach(folder => {
+      folder.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pdf = folder.dataset.pdf;
+        window.open(pdf, '_blank');
+      });
+    });
+
+    // Click outside the cabinet to reset
+    document.addEventListener('click', (e) => {
+      if (!cabinet.contains(e.target)) { // If click is outside cabinet
+        drawers.forEach(d => d.classList.remove('open'));
+        cabinet.classList.remove('zoom');
+      }
+    });
 
     // Add swipe to modals
     document.addEventListener('DOMContentLoaded', () => {
