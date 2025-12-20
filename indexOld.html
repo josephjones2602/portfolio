@@ -698,6 +698,14 @@
       right: 2%;
     }
 
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .carousel-viewport {
+        width: 95%;
+      }
+    }
+
+
     /* PHONE MOCKUP */
     .phone-section {
       margin-bottom: 5rem;
@@ -791,6 +799,17 @@
       right: -60px;
     }
 
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .phone-arrow.prev {
+        left: -35px;
+      }
+
+      .phone-arrow.next {
+        right: -35px;
+      }
+    }
+
 
     /* BRAND EXTENSION IMAGES */
     .campaign-brand .ads {
@@ -857,6 +876,13 @@
       width: 100%;
       height: 100%;
       border: none;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .prod-video-card {
+        padding: 1.5rem;
+      }
     }
 
     /* ================== FILING CABINET ================== */
@@ -1040,6 +1066,27 @@
       margin-left: -100px;
     }
 
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .highlighted-image {
+        width: 70%;
+      }
+
+      .spotlight-wrapper {
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .highlighted-image {
+        width: 90%;
+      }
+
+      .spotlight {
+        display: none;
+      }
+    }
+
     /* ================== ANIMATIONS ================== */
     @keyframes fadeUp {
       from {
@@ -1053,56 +1100,26 @@
       }
     }
 
-    /*==================== RESPONSIVE DESIGN ================== */
+    @media (max-width: 900px) {
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
 
-    /* =========================================================
-   MOBILE OPTIMIZATION (TABLET + PHONE)
-   ========================================================= */
     @media (max-width: 768px) {
-
-      /* ---------- PERFORMANCE ---------- */
-      .hero {
-        background-attachment: scroll;
-        height: auto;
-        padding-top: 6rem;
-        padding-bottom: 3rem;
-      }
-
-      /* Disable hover-only effects on touch */
-      .profile-pic:hover,
-      .brand:hover,
-      .ad-card:hover,
-      .highlighted-image:hover,
-      .campaign-brand img:hover {
-        transform: none;
-        box-shadow: none;
-        filter: none;
-      }
-
-      /* ---------- NAVIGATION ---------- */
       nav {
-        justify-content: flex-start;
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
         padding: 1rem 4vw;
       }
 
       nav a {
-        flex: 0 0 auto;
-        font-size: 0.75rem;
-        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        margin: 0 0.5rem;
       }
 
-      /* ---------- HERO ---------- */
-      .hero-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 1.5rem;
-      }
-
-      .hero-name {
-        font-size: 1.8rem;
+      .hero {
+        height: 90vh;
+        padding: 1rem;
       }
 
       .profile-pic {
@@ -1114,21 +1131,13 @@
         padding: 1.5rem;
       }
 
-      /* ---------- SECTIONS ---------- */
-      section {
-        padding: 3rem 4vw;
-      }
-
       .section-title {
         font-size: 2rem;
         margin-bottom: 2rem;
       }
 
-      /* ---------- BRAND / ADS ---------- */
-      .ads {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
+      section {
+        padding: 3rem 4vw;
       }
 
       .brand {
@@ -1137,96 +1146,36 @@
       }
 
       .ad-card {
-        width: 100%;
-        max-width: 100%;
         padding: 1.5rem;
       }
 
-      /* ---------- IMAGE PREVIEWS ---------- */
-      .image-group {
-        flex-wrap: wrap;
+      .video-carousel {
+        gap: 1rem;
       }
 
-      .image-preview {
-        width: 48%;
+      #videoFrame {
+        width: 100%;
+        height: 250px;
       }
 
-      /* ---------- MODALS ---------- */
-      .image-modal img,
-      .radio-spot-modal img {
-        max-width: 95vw;
-        max-height: 75vh;
+      .carousel-indicators {
+        gap: 0.5rem;
       }
 
-      .radio-spot-modal audio {
-        width: 95vw;
-      }
-
-      .image-prev,
-      .image-next,
-      .radio-prev,
-      .radio-next {
-        font-size: 2.6rem;
-        padding: 0.75rem;
-      }
-
-      .image-close,
-      .radio-close {
-        font-size: 2.6rem;
-      }
-
-      /* ---------- 360 CAMPAIGN ---------- */
-      .campaign-hero,
-      .campaign-carousel {
-        height: 50vh;
-        margin-bottom: 3rem;
-      }
-
-      .carousel-viewport {
-        width: 95%;
-      }
-
-      /* ---------- PHONE MOCKUP ---------- */
-      .phone {
-        width: 260px;
-        height: 520px;
-      }
-
-      .phone-arrow.prev {
-        left: -35px;
-      }
-
-      .phone-arrow.next {
-        right: -35px;
-      }
-
-      /* ---------- FILING CABINET ---------- */
-      .filing-cabinet {
-        transform: scale(0.9);
-      }
-
-      .filing-cabinet.zoom {
-        transform: scale(1) translateZ(0);
-      }
-
-      /* ---------- BEST ONE OFF ---------- */
-      #best-one-off {
-        padding: 4rem 4vw;
-      }
-
-      .spotlight {
-        display: none;
+      .dot {
+        width: 10px;
+        height: 10px;
       }
     }
 
-    /* =========================================================
-   SMALL PHONES (≤ 480px)
-   ========================================================= */
     @media (max-width: 480px) {
-
       nav a {
         font-size: 0.7rem;
-        padding: 0.4rem 0.6rem;
+        margin: 0 0.3rem;
+      }
+
+      .hero-content {
+        gap: 2rem;
       }
 
       .profile-pic {
@@ -1234,25 +1183,34 @@
         height: 200px;
       }
 
-      .hero-name {
+      .bio-text {
+        padding: 1rem;
+      }
+
+      .bio-text h1 {
+        font-size: 1.8rem;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .brand h3 {
         font-size: 1.6rem;
       }
 
-      .image-preview {
-        width: 100%;
+      .ad-card h4 {
+        font-size: 1rem;
       }
 
-      .phone {
-        width: 240px;
-        height: 480px;
+      .image-modal img,
+      .radio-spot-modal img {
+        max-width: 95vw;
+        max-height: 70vh;
       }
 
-      .phone-arrow.prev {
-        left: -25px;
-      }
-
-      .phone-arrow.next {
-        right: -25px;
+      .radio-spot-modal audio {
+        width: 95vw;
       }
     }
   </style>
@@ -1316,7 +1274,7 @@
         <div class="ad-card">
           <h4>Radio Spot</h4>
           <div class="image-group"
-            onclick="openImage(['static/images/OldBay/OldBayRadio1.png','static/images/OldBay/OldBayRadio2.png'], 0)">
+            onclick="openRadioSpot(['static/images/OldBay/OldBayRadio1.png','static/images/OldBay/OldBayRadio2.png'], ['static/audio/OldBayRadio1.mp3','static/audio/OldBayRadio2.mp3'], 0)">
             <img src="static/images/OldBay/OldBayRadio1.png" class="image-preview">
             <img src="static/images/OldBay/OldBayRadio2.png" class="image-preview">
           </div>
@@ -1344,7 +1302,8 @@
       <div class="ads">
         <div class="ad-card">
           <h4>Radio Spot</h4>
-          <div class="image-group" onclick="openImage(['static/images/MothersAnimalCookies/AnimalCookies.png'], 0)">
+          <div class="image-group"
+            onclick="openRadioSpot(['static/images/MothersAnimalCookies/AnimalCookies.png'], ['static/audio/MothersAnimalCookies/AnimalCookies.mp3'], 0)">
             <img src="static/images/MothersAnimalCookies/AnimalCookies.png" class="image-preview">
           </div>
         </div>
@@ -1429,8 +1388,8 @@
   <section id="passion-project">
     <h2 class="section-title">My Passion Project</h2>
     <div class="book-wrapper">
-      <a href="https://editor.reedsy.com/s/slzRlN7/c/Z4NBxVtiFkoD23cm/welcome-to-hell" target="_blank"
-        rel="noopener noreferrer" class="book-link" aria-label="Open Passion Project Book">
+      <a href="https://editor.reedsy.com/s/slzRlN7/c/Z4NBxVtiFkoD23cm/welcome-to-hell" target="_blank" rel="noopener noreferrer" class="book-link"
+        aria-label="Open Passion Project Book">
         <div class="book">
           <div class="book-spine"></div>
           <div class="book-pages"></div>
@@ -1505,6 +1464,7 @@
           <img src="static/images/BreadthOfWork/7MoreDays.png" class="image-preview">
         </div>
       </div>
+
   </section>
 
   <section id="best-one-off">
@@ -1512,19 +1472,21 @@
     <div class="spotlight-wrapper">
       <div class="spotlight"></div>
       <div class="brand">
-        <h3>Hot Hands</h3>
-        <div class="ads">
-          <div class="ad-card">
-            <h4>TV Spot</h4>
-            <div class="image-group" onclick="openImage(['static/images/BestOneOff/HotHands.png'],0)">
-              <img src="static/images/BestOneOff/HotHands.png" class="image-preview">
-            </div>
+      <h3>Hot Hands</h3>
+      <div class="ads">
+        <div class="ad-card">
+          <h4>TV Spot</h4>
+          <div class="image-group"
+            onclick="openImage(['static/images/BestOneOff/HotHands.png'],0)">
+            <img src="static/images/BestOneOff/HotHands.png" class="image-preview">
           </div>
         </div>
       </div>
+    </div>
       <div class="spotlight"></div>
     </div>
   </section>
+
 
   <section id="contact">
     <h2 class="section-title">Contact</h2>
@@ -1556,39 +1518,15 @@
   </div>
 
   <script>
-    /* ==========================================================
-       GLOBAL STATE
-    ========================================================== */
-
-    // Image modal
     let currentImages = [];
     let currentIndex = 0;
-
-    // Radio spot modal
-    let currentRadioImages = [];
-    let currentRadioAudios = [];
-    let currentRadioIndex = 0;
-
-    // Video carousel
-    const videos = ['aj2O1b4KZ3M', '8S0FDjFBj8o', 'h6HLDV1L4W0'];
-    let videoIndex = 0;
-
-    // Swipe tracking
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    /* ==========================================================
-       IMAGE MODAL
-    ========================================================== */
 
     function openImage(images, index) {
       currentImages = images;
       currentIndex = index;
-
       const img = document.getElementById('modalImage');
       img.src = images[index];
       img.style.opacity = 1;
-
       document.getElementById('imageModal').classList.add('active');
     }
 
@@ -1598,53 +1536,43 @@
 
     function prevImage(event) {
       event.stopPropagation();
-      if (currentImages.length <= 1) return;
-
-      transitionImage(() => {
-        currentIndex =
-          (currentIndex - 1 + currentImages.length) % currentImages.length;
-        document.getElementById('modalImage').src =
-          currentImages[currentIndex];
-      });
+      if (currentImages.length > 1) {
+        const img = document.getElementById('modalImage');
+        img.style.opacity = 0;
+        setTimeout(() => {
+          currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+          img.src = currentImages[currentIndex];
+          img.style.opacity = 1;
+        }, 250);
+      }
     }
 
     function nextImage(event) {
       event.stopPropagation();
-      if (currentImages.length <= 1) return;
-
-      transitionImage(() => {
-        currentIndex = (currentIndex + 1) % currentImages.length;
-        document.getElementById('modalImage').src =
-          currentImages[currentIndex];
-      });
+      if (currentImages.length > 1) {
+        const img = document.getElementById('modalImage');
+        img.style.opacity = 0;
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % currentImages.length;
+          img.src = currentImages[currentIndex];
+          img.style.opacity = 1;
+        }, 250);
+      }
     }
 
-    function transitionImage(updateFn) {
-      const img = document.getElementById('modalImage');
-      img.style.opacity = 0;
-
-      setTimeout(() => {
-        updateFn();
-        img.style.opacity = 1;
-      }, 250);
-    }
-
-    /* ==========================================================
-       RADIO SPOT MODAL
-    ========================================================== */
+    let currentRadioImages = [];
+    let currentRadioAudios = [];
+    let currentRadioIndex = 0;
 
     function openRadioSpot(images, audios, index) {
       currentRadioImages = images;
       currentRadioAudios = audios;
       currentRadioIndex = index;
-
       const img = document.getElementById('radioImage');
       const audio = document.getElementById('radioAudio');
-
       img.src = images[index];
       audio.src = audios[index];
       img.style.opacity = 1;
-
       document.getElementById('radioSpotModal').classList.add('active');
     }
 
@@ -1654,57 +1582,43 @@
 
     function prevRadio(event) {
       event.stopPropagation();
-      if (currentRadioImages.length <= 1) return;
-
-      transitionRadio(() => {
-        currentRadioIndex =
-          (currentRadioIndex - 1 + currentRadioImages.length) %
-          currentRadioImages.length;
-        updateRadio();
-      });
+      if (currentRadioImages.length > 1) {
+        const img = document.getElementById('radioImage');
+        const audio = document.getElementById('radioAudio');
+        img.style.opacity = 0;
+        setTimeout(() => {
+          currentRadioIndex = (currentRadioIndex - 1 + currentRadioImages.length) % currentRadioImages.length;
+          img.src = currentRadioImages[currentRadioIndex];
+          audio.src = currentRadioAudios[currentRadioIndex];
+          img.style.opacity = 1;
+        }, 250);
+      }
     }
 
     function nextRadio(event) {
       event.stopPropagation();
-      if (currentRadioImages.length <= 1) return;
-
-      transitionRadio(() => {
-        currentRadioIndex =
-          (currentRadioIndex + 1) % currentRadioImages.length;
-        updateRadio();
-      });
+      if (currentRadioImages.length > 1) {
+        const img = document.getElementById('radioImage');
+        const audio = document.getElementById('radioAudio');
+        img.style.opacity = 0;
+        setTimeout(() => {
+          currentRadioIndex = (currentRadioIndex + 1) % currentRadioImages.length;
+          img.src = currentRadioImages[currentRadioIndex];
+          audio.src = currentRadioAudios[currentRadioIndex];
+          img.style.opacity = 1;
+        }, 250);
+      }
     }
 
-    function updateRadio() {
-      document.getElementById('radioImage').src =
-        currentRadioImages[currentRadioIndex];
-      document.getElementById('radioAudio').src =
-        currentRadioAudios[currentRadioIndex];
-    }
+    const videos = ['aj2O1b4KZ3M', '8S0FDjFBj8o', 'h6HLDV1L4W0'];
+    let videoIndex = 0;
 
-    function transitionRadio(updateFn) {
-      const img = document.getElementById('radioImage');
-      img.style.opacity = 0;
-
-      setTimeout(() => {
-        updateFn();
-        img.style.opacity = 1;
-      }, 250);
-    }
-
-    /* ==========================================================
-       VIDEO CAROUSEL
-    ========================================================== */
-
-    function showVideo(index) {
-      videoIndex = index;
-
-      document.getElementById('videoFrame').src =
-        `https://www.youtube.com/embed/${videos[index]}`;
-
-      document.querySelectorAll('.dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-      });
+    function showVideo(i) {
+      videoIndex = i;
+      document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videos[i]}`;
+      document.querySelectorAll('.dot').forEach((d, idx) =>
+        d.classList.toggle('active', idx === i)
+      );
     }
 
     function prevVideo() {
@@ -1715,31 +1629,30 @@
       showVideo((videoIndex + 1) % videos.length);
     }
 
-    /* ==========================================================
-       SWIPE SUPPORT (MOBILE)
-    ========================================================== */
+    // Mobile optimization: Swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
 
-    function handleSwipe(element, prevFn, nextFn) {
-      element.addEventListener('touchstart', e => {
+    function handleSwipe(element, prevFunc, nextFunc) {
+      element.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
       });
 
-      element.addEventListener('touchend', e => {
+      element.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
-        handleGesture(prevFn, nextFn);
+        handleGesture(prevFunc, nextFunc);
       });
     }
 
-    function handleGesture(prevFn, nextFn) {
-      const threshold = 50;
-
-      if (touchEndX < touchStartX - threshold) nextFn();
-      if (touchEndX > touchStartX + threshold) prevFn();
+    function handleGesture(prevFunc, nextFunc) {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        nextFunc();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        prevFunc();
+      }
     }
-
-    /* ==========================================================
-       CAMPAIGN CAROUSEL
-    ========================================================== */
 
     const track = document.querySelector('.campaign-carousel .carousel-track');
     const slides = Array.from(track.children);
@@ -1749,7 +1662,8 @@
     let currentSlide = 0;
 
     function updateCarousel() {
-      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      const offset = -currentSlide * 100;
+      track.style.transform = `translateX(${offset}%)`;
     }
 
     prevBtn.addEventListener('click', () => {
@@ -1761,10 +1675,6 @@
       currentSlide = (currentSlide + 1) % slides.length;
       updateCarousel();
     });
-
-    /* ==========================================================
-       PHONE CAROUSEL
-    ========================================================== */
 
     const phoneTrack = document.querySelector('.phone-carousel-track');
     const phoneSlides = Array.from(phoneTrack.children);
@@ -1787,52 +1697,43 @@
       updatePhoneCarousel();
     });
 
-    /* ==========================================================
-       FILING CABINET INTERACTION
-    ========================================================== */
-
     const cabinet = document.getElementById('cabinet');
     const drawers = document.querySelectorAll('.drawer');
     const folders = document.querySelectorAll('.folder');
 
-    cabinet.addEventListener('mouseenter', () => {
-      cabinet.classList.add('zoom');
+    // Click cabinet → open middle drawer + zoom
+    cabinet.addEventListener('click', () => {
+      cabinet.classList.toggle('zoom');
 
       drawers.forEach(drawer => drawer.classList.remove('open'));
-      document
-        .querySelector('.drawer[data-drawer="1"]')
-        .classList.add('open');
+      const middleDrawer = document.querySelector('.drawer[data-drawer="1"]');
+      middleDrawer.classList.add('open');
     });
 
-    cabinet.addEventListener('mouseleave', () => {
-      drawers.forEach(drawer => drawer.classList.remove('open'));
-      cabinet.classList.remove('zoom');
-    });
-
+    // Folder click → open PDF
     folders.forEach(folder => {
-      folder.addEventListener('click', e => {
+      folder.addEventListener('click', (e) => {
         e.stopPropagation();
-        window.open(folder.dataset.pdf, '_blank');
+        const pdf = folder.dataset.pdf;
+        window.open(pdf, '_blank');
       });
     });
 
-    /* ==========================================================
-       INITIALIZATION
-    ========================================================== */
+    // Click outside the cabinet to reset
+    document.addEventListener('click', (e) => {
+      if (!cabinet.contains(e.target)) { // If click is outside cabinet
+        drawers.forEach(d => d.classList.remove('open'));
+        cabinet.classList.remove('zoom');
+      }
+    });
 
+    // Add swipe to modals
     document.addEventListener('DOMContentLoaded', () => {
-      handleSwipe(
-        document.getElementById('imageModal'),
-        () => prevImage({ stopPropagation: () => { } }),
-        () => nextImage({ stopPropagation: () => { } })
-      );
-
-      handleSwipe(
-        document.getElementById('radioSpotModal'),
-        () => prevRadio({ stopPropagation: () => { } }),
-        () => nextRadio({ stopPropagation: () => { } })
-      );
+      handleSwipe(document.getElementById('imageModal'), () => prevImage({ stopPropagation: () => { } }), () => nextImage({ stopPropagation: () => { } }));
+      handleSwipe(document.getElementById('radioSpotModal'), () => prevRadio({ stopPropagation: () => { } }), () => nextRadio({ stopPropagation: () => { } }));
     });
   </script>
+
 </body>
+
 </html>
