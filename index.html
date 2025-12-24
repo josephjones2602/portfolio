@@ -412,7 +412,7 @@
       width: 100%;
       text-align: center;
       margin-top: 1rem;
-      color:#e9e9e9;
+      color: #e9e9e9;
       font-size: 10pt;
       margin-bottom: 5rem;
     }
@@ -1100,6 +1100,33 @@
       margin-left: -100px;
     }
 
+    /* ======= Fire cursor overlay ======= */
+    #fireCursorCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      /* never block clicks/hover */
+      z-index: 10000;
+      /* above everything */
+    }
+
+    /* Hide the default cursor when our effect is active */
+    .fire-cursor-enabled {
+      cursor: none;
+    }
+
+    /* Keep the default cursor for form fields, embedded iframes, and editable areas */
+    input,
+    textarea,
+    select,
+    [contenteditable="true"],
+    iframe {
+      cursor: auto !important;
+    }
+
+
     /* ================== ANIMATIONS ================== */
     @keyframes fadeUp {
       from {
@@ -1488,7 +1515,8 @@
     <div class="ads">
       <div class="ad-card">
         <h4>Radio and TV Spots</h4>
-        <div class="image-group" onclick="openImage(
+        <div class="image-group"
+          onclick="openImage(
             ['static/images/Patagonia360/radio.png',
             'static/images/Patagonia360/tv.png'],
             0,
@@ -1661,6 +1689,9 @@
     <img id="radioImage">
     <audio controls id="radioAudio"></audio>
   </div>
+
+  <!-- 🔥 Fire cursor overlay -->
+  <canvas id="fireCursorCanvas" aria-hidden="true"></canvas>
 
   <script>
     /* ==========================================================
@@ -1971,6 +2002,229 @@
       );
     });
   </script>
+
+
+  <script>
+    /* ==========================================================
+       FIRE CURSOR — Canvas particle system
+       - Additive/blend fire at the pointer
+       - Subtle dark "singe" marks trailing behind
+       - Respects prefers-reduced-motion & mobile performance
+    ========================================================== */
+    (function () {
+      const canvas = document.getElementById('fireCursorCanvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      const DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+
+      const config = {
+        desktopOnly: true,               // turn off on touch devices
+        maxFlameParticles: 220,          // cap fire particles
+        maxSingeMarks: 100,              // cap scorch marks
+        emission: 11,                    // flames spawned per frame while moving
+        singeEveryNFrames: 3,            // leave a scorch mark every N frames
+        followLerp: 0.22,                // pointer smoothing
+        fire: {
+          gravity: -0.02,                // flames rise slightly
+          drag: 0.985,
+          baseRadius: 3.8,
+          radiusJitter: 2.2,
+          lifeMin: 420,                  // ms
+          lifeMax: 820,                  // ms
+          colors: [
+            { stop: 0.00, rgba: 'rgba(255,250,180,1)' }, // white-hot core
+            { stop: 0.40, rgba: 'rgba(255,200,90,0.9)' }, // yellow
+            { stop: 0.75, rgba: 'rgba(255,120,40,0.75)' }, // orange
+            { stop: 1.00, rgba: 'rgba(200,40,20,0.0)' }   // fade
+          ]
+        },
+        singe: {
+          lifeMin: 2200,                 // ms
+          lifeMax: 3400,                 // ms
+          radiusMin: 6,
+          radiusMax: 18,
+          color: 'rgba(35, 25, 20, 0.22)', // dark brown-black
+          composite: 'multiply'          // darken underlying pixels
+        }
+      };
+
+      const prefersReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      if (prefersReduceMotion || (config.desktopOnly && isTouch)) {
+        // Respect user preference / avoid heavy effects on mobile
+        return;
+      }
+
+      // Enable class to hide native cursor (except on inputs/iframes via CSS)
+      document.body.classList.add('fire-cursor-enabled');
+
+      // Internal state
+      let vw = 0, vh = 0, running = true;
+      let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      let flameAnchor = { x: mouse.x, y: mouse.y };
+      let lastFrame = performance.now();
+      let frameCount = 0;
+
+      const flames = [];
+      const singeMarks = [];
+
+      // Resize canvas to DPR
+      function resize() {
+        vw = window.innerWidth;
+        vh = window.innerHeight;
+        canvas.style.width = vw + 'px';
+        canvas.style.height = vh + 'px';
+        canvas.width = Math.floor(vw * DPR);
+        canvas.height = Math.floor(vh * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+
+      // Pause on blur to save cycles
+      window.addEventListener('blur', () => running = false);
+      window.addEventListener('focus', () => { running = true; requestAnimationFrame(loop); });
+
+      // Smooth pointer; keep default cursor over interactive elements
+      function isInteractive(el) {
+        if (!el) return false;
+        return el.closest('input, textarea, select, [contenteditable="true"], iframe');
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+
+        // If over inputs/iframes we temporarily show system cursor by removing the class.
+        if (isInteractive(e.target)) {
+          document.body.classList.remove('fire-cursor-enabled');
+        } else {
+          document.body.classList.add('fire-cursor-enabled');
+        }
+      }, { passive: true });
+
+      // Flame particle
+      function spawnFlame(x, y) {
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8; // mostly upward
+        const speed = 0.6 + Math.random() * 1.6;
+        const life = config.fire.lifeMin + Math.random() * (config.fire.lifeMax - config.fire.lifeMin);
+        const radius = config.fire.baseRadius + (Math.random() - 0.5) * config.fire.radiusJitter;
+
+        flames.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life, age: 0,
+          r: Math.max(0.6, radius)
+        });
+        if (flames.length > config.maxFlameParticles) flames.shift();
+      }
+
+      // Scorch mark
+      function spawnSinge(x, y) {
+        const life = config.singe.lifeMin + Math.random() * (config.singe.lifeMax - config.singe.lifeMin);
+        const radius = config.singe.radiusMin + Math.random() * (config.singe.radiusMax - config.singe.radiusMin);
+        singeMarks.push({ x, y, life, age: 0, r: radius });
+        if (singeMarks.length > config.maxSingeMarks) singeMarks.shift();
+      }
+
+      // Draw helpers
+      function drawFlame(p) {
+        const t = p.age / p.life;                // 0..1
+        const fade = Math.max(0, 1 - t);
+        const radius = p.r * (1 + t * 1.4);      // flames expand
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+        config.fire.colors.forEach(c => grd.addColorStop(c.stop, c.rgba));
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+
+      function drawSinge(s) {
+        const t = s.age / s.life;
+        const alpha = Math.max(0, (1 - t)) * 0.65;  // was 0.9
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = config.singe.color;         // keep rgba(35,25,20,0.22)
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+
+      // Main loop
+      function loop(now) {
+        if (!running) return;
+        const dt = Math.min(64, now - lastFrame); // clamp delta
+        lastFrame = now;
+        frameCount++;
+
+        // Ease anchor towards mouse for nicer motion
+        flameAnchor.x += (mouse.x - flameAnchor.x) * config.followLerp;
+        flameAnchor.y += (mouse.y - flameAnchor.y) * config.followLerp;
+
+
+        // Fade previous frame WITHOUT tinting the page
+        // destination-out subtracts alpha, gradually erasing old pixels
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 0.08;          // lower = longer afterglow; raise for faster fade
+        ctx.fillRect(0, 0, vw, vh);
+
+        // Restore normal compositing for subsequent passes
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+
+
+        // Leave singe marks periodically
+        if (frameCount % config.singeEveryNFrames === 0) {
+          spawnSinge(flameAnchor.x, flameAnchor.y);
+        }
+
+        // Update & draw singe marks first (darken), then flames (additive)
+        // --- Singe pass (multiply) ---
+        ctx.globalCompositeOperation = config.singe.composite; // 'multiply'
+        for (let i = singeMarks.length - 1; i >= 0; i--) {
+          const s = singeMarks[i];
+          s.age += dt;
+          if (s.age >= s.life) { singeMarks.splice(i, 1); continue; }
+          drawSinge(s);
+        }
+
+        // Spawn flames
+        for (let i = 0; i < config.emission; i++) spawnFlame(flameAnchor.x, flameAnchor.y);
+
+        // --- Flame pass (lighter/additive) ---
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = flames.length - 1; i >= 0; i--) {
+          const p = flames[i];
+          // physics
+          p.vx *= config.fire.drag;
+          p.vy = (p.vy + config.fire.gravity) * config.fire.drag;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.age += dt;
+          if (p.age >= p.life) { flames.splice(i, 1); continue; }
+          drawFlame(p);
+        }
+
+        // Optional: a small white-hot dot to help precision
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(255,255,230,0.9)';
+        ctx.beginPath();
+        ctx.arc(flameAnchor.x, flameAnchor.y, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    })();
+  </script>
+
 </body>
 
 </html>
