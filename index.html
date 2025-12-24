@@ -93,6 +93,14 @@
       width: 100%;
     }
 
+    /* ================== Image Wrapper ========= */
+    .img-wrapper {
+      width: auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
     /* ================== HERO ================== */
     .hero {
       height: 100vh;
@@ -400,6 +408,47 @@
       right: 20px;
     }
 
+    .img-credits {
+      width: 100%;
+      text-align: center;
+      margin-top: 1rem;
+      color:#e9e9e9;
+      font-size: 10pt;
+      margin-bottom: 5rem;
+    }
+
+    /* ================== IMAGE MODAL CAPTION ================== */
+    .image-modal-figure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 92vw;
+      max-height: 92vh;
+    }
+
+    .image-caption {
+      max-width: 90vw;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 0.6rem 0.9rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Ensure image + caption together fit the viewport */
+    .image-modal img {
+      max-width: 90vw;
+      max-height: 78vh;
+      /* slightly reduced to make room for caption */
+      border-radius: 16px;
+      transition: opacity 0.5s ease;
+    }
+
+
     /* ================== RADIO SPOT MODAL ================== */
     .radio-spot-modal {
       position: fixed;
@@ -622,7 +671,6 @@
       justify-content: center;
       align-items: center;
       height: 80vh;
-      margin-bottom: 5rem;
       border-radius: 22px;
       overflow: hidden;
       box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
@@ -641,7 +689,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 5rem;
+      margin-top: 5rem;
     }
 
     .carousel-viewport {
@@ -700,7 +748,7 @@
 
     /* PHONE MOCKUP */
     .phone-section {
-      margin-bottom: 5rem;
+      margin-top: 5rem;
     }
 
     .phone {
@@ -985,6 +1033,18 @@
       box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
     }
 
+    .cabinet-tag {
+      background-color: rgb(255, 226, 189);
+      font-family: 'Comic Sans MS', cursive;
+      position: relative;
+      top: 50%;
+      width: 8em;
+      justify-self: center;
+      justify-content: center;
+      display: flex;
+      color: rgb(69, 69, 69);
+    }
+
 
     /* ================== BEST ONE-OFF SECTION ================== */
     #best-one-off {
@@ -1151,6 +1211,11 @@
         width: 48%;
       }
 
+      .image-caption {
+        font-size: 0.9rem;
+        padding: 0.55rem 0.8rem;
+      }
+
       /* ---------- MODALS ---------- */
       .image-modal img,
       .radio-spot-modal img {
@@ -1173,17 +1238,6 @@
       .image-close,
       .radio-close {
         font-size: 2.6rem;
-      }
-
-      /* ---------- 360 CAMPAIGN ---------- */
-      .campaign-hero,
-      .campaign-carousel {
-        height: 50vh;
-        margin-bottom: 3rem;
-      }
-
-      .carousel-viewport {
-        width: 95%;
       }
 
       /* ---------- PHONE MOCKUP ---------- */
@@ -1265,9 +1319,9 @@
     <a href="#print-campaign">Print Campaign</a>
     <a href="#360-campaign">360 Campaign</a>
     <a href="#prod-media-element">Videos</a>
-    <a href="#passion-project">My Passion Project</a>
     <a href="#breadth-of-work">Breadth of Work</a>
     <a href="#best-one-off">Best One Off</a>
+    <a href="#passion-project">My Passion Project</a>
     <a href="#contact">Contact</a>
   </nav>
 
@@ -1306,13 +1360,23 @@
       <div class="ads">
         <div class="ad-card">
           <h4>Print Campaign</h4>
-          <div class="image-group"
-            onclick="openImage(['static/images/OldBay/OldBayJanice.png','static/images/OldBay/OldBayJimmy.png','static/images/OldBay/OldBayMace.png'],0)">
+
+          <div class="image-group" onclick="openImage(
+            ['static/images/OldBay/OldBayJanice.png',
+            'static/images/OldBay/OldBayJimmy.png',
+            'static/images/OldBay/OldBayMace.png'],
+            0,
+            ['Concept & Copywriting: Joseph Jones · Images generated with AI',
+              'Concept & Copywriting: Joseph Jones · Images generated with AI',
+              'Concept & Copywriting: Joseph Jones · Images generated with AI']
+          )">
             <img src="static/images/OldBay/OldBayJanice.png" class="image-preview">
             <img src="static/images/OldBay/OldBayJimmy.png" class="image-preview">
             <img src="static/images/OldBay/OldBayMace.png" class="image-preview">
           </div>
+
         </div>
+        <!--
         <div class="ad-card">
           <h4>Radio Spot</h4>
           <div class="image-group"
@@ -1321,6 +1385,7 @@
             <img src="static/images/OldBay/OldBayRadio2.png" class="image-preview">
           </div>
         </div>
+        -->
       </div>
     </div>
 
@@ -1329,8 +1394,14 @@
       <div class="ads">
         <div class="ad-card">
           <h4>Print Campaign</h4>
-          <div class="image-group"
-            onclick="openImage(['static/images/TopoChico/TopoChico1.png','static/images/TopoChico/TopoChico2.png','static/images/TopoChico/TopoChico3.png'],0)">
+          <div class="image-group" onclick="openImage(
+              ['static/images/TopoChico/TopoChico1.png',
+              'static/images/TopoChico/TopoChico2.png',
+              'static/images/TopoChico/TopoChico3.png'],
+              0,
+              ['Concept & Copywriting: Joseph Jones · Images generated with AI',
+              'Concept & Copywriting: Joseph Jones · Images generated with AI',
+              'Concept & Copywriting: Joseph Jones · Images generated with AI'])">
             <img src="static/images/TopoChico/TopoChico1.png" class="image-preview">
             <img src="static/images/TopoChico/TopoChico2.png" class="image-preview">
             <img src="static/images/TopoChico/TopoChico3.png" class="image-preview">
@@ -1338,7 +1409,7 @@
         </div>
       </div>
     </div>
-
+    <!--
     <div class="brand">
       <h3>Mother's Animal Cookies</h3>
       <div class="ads">
@@ -1350,6 +1421,7 @@
         </div>
       </div>
     </div>
+    -->
   </section>
 
   <section id="360-campaign">
@@ -1359,10 +1431,16 @@
     <div class="campaign-hero">
       <img src="static/images/Patagonia360/EscAdd.jpeg" alt="360 Campaign Hero">
     </div>
+    <div class="img-credits">
+      <p>Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill</p>
+    </div>
 
     <!-- HERO IMAGE 2 -->
     <div class="campaign-hero">
       <img src="static/images/Patagonia360/GameTrail.png" alt="Game Trail Campaign Hero">
+    </div>
+    <div class="img-credits">
+      <p>Concept & Copywriting: Joseph Jones · Images generated with AI</p>
     </div>
 
     <!-- DESKTOP / OOH CAROUSEL -->
@@ -1378,6 +1456,9 @@
       </div>
 
       <button class="campaign-arrow next" aria-label="Next slide">&#10095;</button>
+    </div>
+    <div class="img-credits">
+      <p>Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill</p>
     </div>
 
 
@@ -1400,12 +1481,19 @@
         <button class="phone-arrow next">&#10095;</button>
       </div>
     </div>
+    <div class="img-credits" style="margin-bottom:5rem">
+      <p>Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill</p>
+    </div>
 
     <div class="ads">
       <div class="ad-card">
         <h4>Radio and TV Spots</h4>
-        <div class="image-group"
-          onclick="openImage(['static/images/Patagonia360/radio.png','static/images/Patagonia360/tv.png'],0)">
+        <div class="image-group" onclick="openImage(
+            ['static/images/Patagonia360/radio.png',
+            'static/images/Patagonia360/tv.png'],
+            0,
+            ['Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill',
+            'Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill'])">
           <img src="static/images/Patagonia360/radio.png" class="image-preview">
           <img src="static/images/Patagonia360/tv.png" class="image-preview">
         </div>
@@ -1424,24 +1512,8 @@
         </div>
       </div>
     </div>
-  </section>
-
-  <section id="passion-project">
-    <h2 class="section-title">My Passion Project</h2>
-    <div class="book-wrapper">
-      <a href="https://editor.reedsy.com/s/slzRlN7/c/Z4NBxVtiFkoD23cm/welcome-to-hell" target="_blank"
-        rel="noopener noreferrer" class="book-link" aria-label="Open Passion Project Book">
-        <div class="book">
-          <div class="book-spine"></div>
-          <div class="book-pages"></div>
-
-          <div class="book-cover">
-            <div class="book-title">
-              <h3>Foreign Exchange in Hell</h3>
-            </div>
-          </div>
-        </div>
-      </a>
+    <div class="img-credits">
+      <p>Copywriter: Joseph Jones · Art Directors: Bella Hsiung and Liz Beckwith · Content Creator: Skyler Chapman</p>
     </div>
   </section>
 
@@ -1464,10 +1536,12 @@
             <div class="folder" data-pdf="static/images/BreadthOfWork/EngagingTheBloodyClownOpinonPiece.pdf">
               <span>Engaging the Bloody Clown - Opinon Piece</span>
             </div>
+            <!--
             <div class="folder" data-pdf="static/images/BreadthOfWork/BrimmingWithSquirrels.pdf">
               <span>Brimming With Squirrels</span>
             </div>
-            <div class="folder" data-pdf="static/images/BreadthOfWork/FracturedFairyTaleLittleRedRobinHood.pdf">
+            -->
+            <div class="folder" data-pdf="static/images/BreadthOfWork/FracturedFairyTale_LittleRedRobinHood.pdf">
               <span>Fractured Fairy Tale - Little Red Robin Hood</span>
             </div>
             <div class="folder" data-pdf="static/images/BreadthOfWork/AdvertisingApplicationPortfolio.pdf">
@@ -1482,8 +1556,8 @@
             <div class="folder" data-pdf="static/images/BreadthOfWork/JustEnjoyShortStory.pdf">
               <span>Just Enjoy - Short Story</span>
             </div>
-            <div class="folder" data-pdf="static/images/BreadthOfWork/ShunaShortStory.pdf">
-              <span>Shuna - Short Story</span>
+            <div class="folder" data-pdf="static/images/BreadthOfWork/ShaunaShortStory.pdf">
+              <span>Shauna - Short Story</span>
             </div>
           </div>
         </div>
@@ -1491,11 +1565,14 @@
         <!-- BOTTOM DRAWER -->
         <div class="drawer" data-drawer="2">
           <div class="drawer-handle"></div>
+          <div class="cabinet-tag">
+            <p>Joseph's Work</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="ads">
+    <!--<div class="ads">
       <div class="ad-card">
         <h4>Miscellaneous Work</h4>
         <div class="image-group"
@@ -1505,24 +1582,47 @@
           <img src="static/images/BreadthOfWork/7MoreDays.png" class="image-preview">
         </div>
       </div>
+    </div>
+    -->
   </section>
 
+
   <section id="best-one-off">
-    <h2 class="section-title">Best One Off</h2>
+    <h2 class="section-title">Hot Hands Campaign</h2>
     <div class="spotlight-wrapper">
       <div class="spotlight"></div>
       <div class="brand">
-        <h3>Hot Hands</h3>
         <div class="ads">
           <div class="ad-card">
             <h4>TV Spot</h4>
-            <div class="image-group" onclick="openImage(['static/images/BestOneOff/HotHands.png'],0)">
+            <div class="image-group"
+              onclick="openImage(['static/images/BestOneOff/HotHands.png'],0,['Concept & Copywriting: Joseph Jones'])">
               <img src="static/images/BestOneOff/HotHands.png" class="image-preview">
             </div>
           </div>
         </div>
       </div>
       <div class="spotlight"></div>
+    </div>
+  </section>
+
+  <section id="passion-project">
+    <h2 class="section-title">My Passion Project</h2>
+    <div class="book-wrapper">
+      <a href="https://editor.reedsy.com/s/slzRlN7/c/Z4NBxVtiFkoD23cm/welcome-to-hell" target="_blank"
+        rel="noopener noreferrer" class="book-link" aria-label="Open Passion Project Book">
+        <div class="book">
+          <div class="book-spine"></div>
+          <div class="book-pages"></div>
+
+          <div class="book-cover">
+            <div class="book-title">
+              <h3>Foreign Exchange in Hell</h3>
+              <p>By Joseph Jones</p>
+            </div>
+          </div>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -1540,12 +1640,19 @@
     © 2025 Joseph Jones · Advertising Copywriter
   </footer>
 
+
   <div class="image-modal" id="imageModal" onclick="closeImage()">
     <span class="image-close">×</span>
     <span class="image-prev" onclick="prevImage(event)">&#10094;</span>
     <span class="image-next" onclick="nextImage(event)">&#10095;</span>
-    <img id="modalImage">
+
+    <!-- Use figure so we can have a semantic caption -->
+    <figure class="image-modal-figure" onclick="event.stopPropagation()">
+      <img id="modalImage" alt="Expanded portfolio image">
+      <figcaption id="imageCaption" class="image-caption"></figcaption>
+    </figure>
   </div>
+
 
   <div class="radio-spot-modal" id="radioSpotModal" onclick="closeRadioSpot()">
     <span class="radio-close">×</span>
@@ -1563,6 +1670,7 @@
     // Image modal
     let currentImages = [];
     let currentIndex = 0;
+    let currentCredits = [];
 
     // Radio spot modal
     let currentRadioImages = [];
@@ -1581,13 +1689,32 @@
        IMAGE MODAL
     ========================================================== */
 
-    function openImage(images, index) {
+    function filenameFromPath(path) {
+      try {
+        const name = path.split('/').pop() || path;
+        // Strip common extensions
+        return name.replace(/\.(png|jpg|jpeg|gif|webp|svg|pdf)$/i, '').replace(/[_-]/g, ' ');
+      } catch {
+        return path;
+      }
+    }
+
+    function openImage(images, index, credits = []) {
       currentImages = images;
       currentIndex = index;
+      currentCredits = Array.isArray(credits) ? credits : [];
 
       const img = document.getElementById('modalImage');
+      const caption = document.getElementById('imageCaption');
+
       img.src = images[index];
       img.style.opacity = 1;
+
+      // Set caption: use provided credit or fallback to filename
+      const creditText = currentCredits[index] && currentCredits[index].trim()
+        ? currentCredits[index]
+        : filenameFromPath(images[index]);
+      caption.textContent = creditText;
 
       document.getElementById('imageModal').classList.add('active');
     }
@@ -1601,10 +1728,14 @@
       if (currentImages.length <= 1) return;
 
       transitionImage(() => {
-        currentIndex =
-          (currentIndex - 1 + currentImages.length) % currentImages.length;
-        document.getElementById('modalImage').src =
-          currentImages[currentIndex];
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        const newSrc = currentImages[currentIndex];
+        document.getElementById('modalImage').src = newSrc;
+
+        const creditText = currentCredits[currentIndex] && currentCredits[currentIndex].trim()
+          ? currentCredits[currentIndex]
+          : filenameFromPath(newSrc);
+        document.getElementById('imageCaption').textContent = creditText;
       });
     }
 
@@ -1614,8 +1745,13 @@
 
       transitionImage(() => {
         currentIndex = (currentIndex + 1) % currentImages.length;
-        document.getElementById('modalImage').src =
-          currentImages[currentIndex];
+        const newSrc = currentImages[currentIndex];
+        document.getElementById('modalImage').src = newSrc;
+
+        const creditText = currentCredits[currentIndex] && currentCredits[currentIndex].trim()
+          ? currentCredits[currentIndex]
+          : filenameFromPath(newSrc);
+        document.getElementById('imageCaption').textContent = creditText;
       });
     }
 
@@ -1628,6 +1764,7 @@
         img.style.opacity = 1;
       }, 250);
     }
+
 
     /* ==========================================================
        RADIO SPOT MODAL
@@ -1835,4 +1972,5 @@
     });
   </script>
 </body>
+
 </html>
