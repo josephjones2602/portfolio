@@ -521,18 +521,28 @@
     .book-cover {
       position: absolute;
       inset: 0;
+
       background:
         radial-gradient(circle at top left, rgba(255, 255, 255, 0.15), transparent 40%),
-        linear-gradient(145deg, #8f6a3a, #5c4322);
+        linear-gradient(145deg, rgba(143, 106, 58, 0.6), rgba(92, 67, 34, 0.6)),
+        url("static/images/ForeignExchangeInHellCover.png");
+
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
       border-radius: 6px 10px 10px 6px;
+
       box-shadow:
         0 30px 60px rgba(0, 0, 0, 0.55),
         inset 0 0 0 1px rgba(255, 255, 255, 0.15),
         inset -6px 0 12px rgba(0, 0, 0, 0.35);
+
       transform-origin: left center;
       transform-style: preserve-3d;
       transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
     }
+
 
     .book-link:hover .book-cover {
       transform: rotateY(-34deg);
@@ -605,15 +615,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       padding: 2rem;
-      color: #f5f2ea;
+      color: #000000;
       text-align: center;
     }
 
     .book-title h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
+      font-size: 1rem;
       margin-bottom: 0.5rem;
       letter-spacing: 0.05em;
     }
@@ -1342,10 +1352,10 @@
       <div class="bio-text">
         <p>
           I like to set people on fire. When someone says, "Woah, it's perfect." and all of a sudden
-          everyone's hip, fist, or mouth bumping, then I know I've done well. That's why I choose 
+          everyone's hip, fist, or mouth bumping, then I know I've done well. That's why I choose
           advertising; setting other people on fire also sets me on fire.
-          <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. I have six 
-          sexy siblings and parents I would die for. I believe the best way to set someone on fire 
+          <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. I have six
+          sexy siblings and parents I would die for. I believe the best way to set someone on fire
           is to make a person say, “I know exactly what he’s talking about.”<br><br>
           TLDR: ring true. Like a fire alarm.<br><br>
           I’m always looking for ways to improve or collaborate. Contact me at my email and I’ll get back
@@ -1415,7 +1425,7 @@
       </div>
     </div>
     -->
-    
+
     <!--
     <div class="brand">
       <h3>Mother's Animal Cookies</h3>
@@ -1959,294 +1969,294 @@
     });
   </script>
 
-  
-<script>
-/* ==========================================================
-   FIRE CURSOR — public start/stop/toggle API
-   ========================================================== */
 
-(function () {
-  const canvas = document.getElementById('fireCursorCanvas');
+  <script>
+    /* ==========================================================
+       FIRE CURSOR — public start/stop/toggle API
+       ========================================================== */
 
-  // Safe defaults if canvas missing
-  if (!canvas) {
-    window.isFireCursorActive = false;
-    window.startFireCursor = function(){};
-    window.stopFireCursor = function(){};
-    return;
-  }
+    (function () {
+      const canvas = document.getElementById('fireCursorCanvas');
 
-  const DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-  const ctx = canvas.getContext('2d');
-
-  const config = {
-    desktopOnly: true,
-    maxFlameParticles: 220,
-    maxSingeMarks: 100,
-    emission: 11,
-    singeEveryNFrames: 3,
-    followLerp: 0.22,
-    fire: {
-      gravity: -0.02,
-      drag: 0.985,
-      baseRadius: 3.8,
-      radiusJitter: 2.2,
-      lifeMin: 420,
-      lifeMax: 820,
-      colors: [
-        { stop: 0.00, rgba: 'rgba(255,250,180,1)' },
-        { stop: 0.40, rgba: 'rgba(255,200,90,0.9)' },
-        { stop: 0.75, rgba: 'rgba(255,120,40,0.75)' },
-        { stop: 1.00, rgba: 'rgba(200,40,20,0.0)' }
-      ]
-    },
-    singe: {
-      lifeMin: 2200,
-      lifeMax: 3400,
-      radiusMin: 6,
-      radiusMax: 18,
-      color: 'rgba(35, 25, 20, 0.22)',
-      composite: 'multiply'
-    }
-  };
-
-  const prefersReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-  // Internal state (shared between start/stop)
-  let vw = 0, vh = 0;
-  let running = false;                 // animation loop flag
-  let rafId = null;                    // requestAnimationFrame id
-  let frameCount = 0;
-  let lastFrame = 0;
-  let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  let flameAnchor = { x: mouse.x, y: mouse.y };
-  let flames = [];
-  let singeMarks = [];
-
-  // Event refs (so we can remove them)
-  let onResize, onMouseMove, onBlur, onFocus;
-
-  function resize() {
-    vw = window.innerWidth;
-    vh = window.innerHeight;
-    canvas.style.width = vw + 'px';
-    canvas.style.height = vh + 'px';
-    canvas.width = Math.floor(vw * DPR);
-    canvas.height = Math.floor(vh * DPR);
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  }
-
-  function isInteractive(el) {
-    if (!el) return false;
-    return el.closest('input, textarea, select, [contenteditable="true"], iframe');
-  }
-
-  function spawnFlame(x, y) {
-    const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
-    const speed = 0.6 + Math.random() * 1.6;
-    const life = config.fire.lifeMin + Math.random() * (config.fire.lifeMax - config.fire.lifeMin);
-    const radius = config.fire.baseRadius + (Math.random() - 0.5) * config.fire.radiusJitter;
-    flames.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life, age: 0, r: Math.max(0.6, radius) });
-    if (flames.length > config.maxFlameParticles) flames.shift();
-  }
-
-  function spawnSinge(x, y) {
-    const life = config.singe.lifeMin + Math.random() * (config.singe.lifeMax - config.singe.lifeMin);
-    const radius = config.singe.radiusMin + Math.random() * (config.singe.radiusMax - config.singe.radiusMin);
-    singeMarks.push({ x, y, life, age: 0, r: radius });
-    if (singeMarks.length > config.maxSingeMarks) singeMarks.shift();
-  }
-
-  function drawFlame(p) {
-    const t = p.age / p.life;
-    const fade = Math.max(0, 1 - t);
-    const radius = p.r * (1 + t * 1.4);
-    const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
-    config.fire.colors.forEach(c => grd.addColorStop(c.stop, c.rgba));
-    ctx.globalAlpha = fade;
-    ctx.fillStyle = grd;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function drawSinge(s) {
-    const t = s.age / s.life;
-    const alpha = Math.max(0, (1 - t)) * 0.65;
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = config.singe.color;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function loop(now) {
-    if (!running) return;
-    rafId = requestAnimationFrame(loop);
-
-    const dt = Math.min(64, now - lastFrame);
-    lastFrame = now;
-    frameCount++;
-
-    // Smooth follow
-    flameAnchor.x += (mouse.x - flameAnchor.x) * config.followLerp;
-    flameAnchor.y += (mouse.y - flameAnchor.y) * config.followLerp;
-
-    // Fade previous frame
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.globalAlpha = 0.08;
-    ctx.fillRect(0, 0, vw, vh);
-
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-
-    if (frameCount % config.singeEveryNFrames === 0) {
-      spawnSinge(flameAnchor.x, flameAnchor.y);
-    }
-
-    // Singe pass
-    ctx.globalCompositeOperation = config.singe.composite;
-    for (let i = singeMarks.length - 1; i >= 0; i--) {
-      const s = singeMarks[i];
-      s.age += dt;
-      if (s.age >= s.life) { singeMarks.splice(i, 1); continue; }
-      drawSinge(s);
-    }
-
-    // Flames
-    for (let i = 0; i < config.emission; i++) spawnFlame(flameAnchor.x, flameAnchor.y);
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = flames.length - 1; i >= 0; i--) {
-      const p = flames[i];
-      p.vx *= config.fire.drag;
-      p.vy = (p.vy + config.fire.gravity) * config.fire.drag;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.age += dt;
-      if (p.age >= p.life) { flames.splice(i, 1); continue; }
-      drawFlame(p);
-    }
-
-    // Precision dot
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = 'rgba(255,255,230,0.9)';
-    ctx.beginPath();
-    ctx.arc(flameAnchor.x, flameAnchor.y, 1.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  /* ---------- PUBLIC API ---------- */
-  window.isFireCursorActive = false;
-
-  window.startFireCursor = function () {
-    // Respect reduced motion / mobile rule
-    if (prefersReduceMotion || (config.desktopOnly && isTouch)) {
-      window.isFireCursorActive = false;
-      return;
-    }
-    if (window.isFireCursorActive) return; // already running
-
-    // Reset state
-    flames = [];
-    singeMarks = [];
-    frameCount = 0;
-    lastFrame = performance.now();
-
-    // Prepare canvas
-    canvas.style.display = 'block';
-    resize();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Listeners
-    onResize = () => resize();
-    window.addEventListener('resize', onResize, { passive: true });
-
-    onMouseMove = (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      if (isInteractive(e.target)) {
-        document.body.classList.remove('fire-cursor-enabled');
-      } else {
-        document.body.classList.add('fire-cursor-enabled');
+      // Safe defaults if canvas missing
+      if (!canvas) {
+        window.isFireCursorActive = false;
+        window.startFireCursor = function () { };
+        window.stopFireCursor = function () { };
+        return;
       }
-    };
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    onBlur = () => { running = false; };
-    onFocus = () => {
-      if (window.isFireCursorActive) {
+      const DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+      const ctx = canvas.getContext('2d');
+
+      const config = {
+        desktopOnly: true,
+        maxFlameParticles: 220,
+        maxSingeMarks: 100,
+        emission: 11,
+        singeEveryNFrames: 3,
+        followLerp: 0.22,
+        fire: {
+          gravity: -0.02,
+          drag: 0.985,
+          baseRadius: 3.8,
+          radiusJitter: 2.2,
+          lifeMin: 420,
+          lifeMax: 820,
+          colors: [
+            { stop: 0.00, rgba: 'rgba(255,250,180,1)' },
+            { stop: 0.40, rgba: 'rgba(255,200,90,0.9)' },
+            { stop: 0.75, rgba: 'rgba(255,120,40,0.75)' },
+            { stop: 1.00, rgba: 'rgba(200,40,20,0.0)' }
+          ]
+        },
+        singe: {
+          lifeMin: 2200,
+          lifeMax: 3400,
+          radiusMin: 6,
+          radiusMax: 18,
+          color: 'rgba(35, 25, 20, 0.22)',
+          composite: 'multiply'
+        }
+      };
+
+      const prefersReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      // Internal state (shared between start/stop)
+      let vw = 0, vh = 0;
+      let running = false;                 // animation loop flag
+      let rafId = null;                    // requestAnimationFrame id
+      let frameCount = 0;
+      let lastFrame = 0;
+      let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      let flameAnchor = { x: mouse.x, y: mouse.y };
+      let flames = [];
+      let singeMarks = [];
+
+      // Event refs (so we can remove them)
+      let onResize, onMouseMove, onBlur, onFocus;
+
+      function resize() {
+        vw = window.innerWidth;
+        vh = window.innerHeight;
+        canvas.style.width = vw + 'px';
+        canvas.style.height = vh + 'px';
+        canvas.width = Math.floor(vw * DPR);
+        canvas.height = Math.floor(vh * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      function isInteractive(el) {
+        if (!el) return false;
+        return el.closest('input, textarea, select, [contenteditable="true"], iframe');
+      }
+
+      function spawnFlame(x, y) {
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+        const speed = 0.6 + Math.random() * 1.6;
+        const life = config.fire.lifeMin + Math.random() * (config.fire.lifeMax - config.fire.lifeMin);
+        const radius = config.fire.baseRadius + (Math.random() - 0.5) * config.fire.radiusJitter;
+        flames.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life, age: 0, r: Math.max(0.6, radius) });
+        if (flames.length > config.maxFlameParticles) flames.shift();
+      }
+
+      function spawnSinge(x, y) {
+        const life = config.singe.lifeMin + Math.random() * (config.singe.lifeMax - config.singe.lifeMin);
+        const radius = config.singe.radiusMin + Math.random() * (config.singe.radiusMax - config.singe.radiusMin);
+        singeMarks.push({ x, y, life, age: 0, r: radius });
+        if (singeMarks.length > config.maxSingeMarks) singeMarks.shift();
+      }
+
+      function drawFlame(p) {
+        const t = p.age / p.life;
+        const fade = Math.max(0, 1 - t);
+        const radius = p.r * (1 + t * 1.4);
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+        config.fire.colors.forEach(c => grd.addColorStop(c.stop, c.rgba));
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawSinge(s) {
+        const t = s.age / s.life;
+        const alpha = Math.max(0, (1 - t)) * 0.65;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = config.singe.color;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function loop(now) {
+        if (!running) return;
+        rafId = requestAnimationFrame(loop);
+
+        const dt = Math.min(64, now - lastFrame);
+        lastFrame = now;
+        frameCount++;
+
+        // Smooth follow
+        flameAnchor.x += (mouse.x - flameAnchor.x) * config.followLerp;
+        flameAnchor.y += (mouse.y - flameAnchor.y) * config.followLerp;
+
+        // Fade previous frame
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 0.08;
+        ctx.fillRect(0, 0, vw, vh);
+
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (frameCount % config.singeEveryNFrames === 0) {
+          spawnSinge(flameAnchor.x, flameAnchor.y);
+        }
+
+        // Singe pass
+        ctx.globalCompositeOperation = config.singe.composite;
+        for (let i = singeMarks.length - 1; i >= 0; i--) {
+          const s = singeMarks[i];
+          s.age += dt;
+          if (s.age >= s.life) { singeMarks.splice(i, 1); continue; }
+          drawSinge(s);
+        }
+
+        // Flames
+        for (let i = 0; i < config.emission; i++) spawnFlame(flameAnchor.x, flameAnchor.y);
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = flames.length - 1; i >= 0; i--) {
+          const p = flames[i];
+          p.vx *= config.fire.drag;
+          p.vy = (p.vy + config.fire.gravity) * config.fire.drag;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.age += dt;
+          if (p.age >= p.life) { flames.splice(i, 1); continue; }
+          drawFlame(p);
+        }
+
+        // Precision dot
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(255,255,230,0.9)';
+        ctx.beginPath();
+        ctx.arc(flameAnchor.x, flameAnchor.y, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      /* ---------- PUBLIC API ---------- */
+      window.isFireCursorActive = false;
+
+      window.startFireCursor = function () {
+        // Respect reduced motion / mobile rule
+        if (prefersReduceMotion || (config.desktopOnly && isTouch)) {
+          window.isFireCursorActive = false;
+          return;
+        }
+        if (window.isFireCursorActive) return; // already running
+
+        // Reset state
+        flames = [];
+        singeMarks = [];
+        frameCount = 0;
+        lastFrame = performance.now();
+
+        // Prepare canvas
+        canvas.style.display = 'block';
+        resize();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Listeners
+        onResize = () => resize();
+        window.addEventListener('resize', onResize, { passive: true });
+
+        onMouseMove = (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          if (isInteractive(e.target)) {
+            document.body.classList.remove('fire-cursor-enabled');
+          } else {
+            document.body.classList.add('fire-cursor-enabled');
+          }
+        };
+        window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+        onBlur = () => { running = false; };
+        onFocus = () => {
+          if (window.isFireCursorActive) {
+            running = true;
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(loop);
+          }
+        };
+        window.addEventListener('blur', onBlur);
+        window.addEventListener('focus', onFocus);
+
+        // Start loop
         running = true;
+        window.isFireCursorActive = true;
+        document.body.classList.add('fire-cursor-enabled');
         cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(loop);
+      };
+
+      window.stopFireCursor = function () {
+        if (!window.isFireCursorActive) return;
+
+        window.isFireCursorActive = false;
+        running = false;
+
+        // Remove listeners
+        if (onResize) window.removeEventListener('resize', onResize);
+        if (onMouseMove) window.removeEventListener('mousemove', onMouseMove);
+        if (onBlur) window.removeEventListener('blur', onBlur);
+        if (onFocus) window.removeEventListener('focus', onFocus);
+
+        // Restore cursor and hide canvas
+        document.body.classList.remove('fire-cursor-enabled');
+        try {
+          cancelAnimationFrame(rafId);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvas.style.display = 'none';
+        } catch { }
+      };
+
+      // Auto-start on load (unless user prefers reduced motion or touch-only)
+      window.startFireCursor();
+
+    })();
+  </script>
+
+  <script>
+    // Toggle the fire cursor and hydrant icon on click
+    document.addEventListener('DOMContentLoaded', function () {
+      const hydrantImg = document.querySelector('#hydrant img');
+      if (!hydrantImg) return;
+
+      function updateIcon() {
+        hydrantImg.src = window.isFireCursorActive
+          ? 'static/icons/hydrant.png'         // fire ON → regular hydrant
+          : 'static/icons/hydrantWater.png';   // fire OFF → water hydrant
       }
-    };
-    window.addEventListener('blur', onBlur);
-    window.addEventListener('focus', onFocus);
 
-    // Start loop
-    running = true;
-    window.isFireCursorActive = true;
-    document.body.classList.add('fire-cursor-enabled');
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(loop);
-  };
-
-  window.stopFireCursor = function () {
-    if (!window.isFireCursorActive) return;
-
-    window.isFireCursorActive = false;
-    running = false;
-
-    // Remove listeners
-    if (onResize) window.removeEventListener('resize', onResize);
-    if (onMouseMove) window.removeEventListener('mousemove', onMouseMove);
-    if (onBlur) window.removeEventListener('blur', onBlur);
-    if (onFocus) window.removeEventListener('focus', onFocus);
-
-    // Restore cursor and hide canvas
-    document.body.classList.remove('fire-cursor-enabled');
-    try {
-      cancelAnimationFrame(rafId);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.style.display = 'none';
-    } catch {}
-  };
-
-  // Auto-start on load (unless user prefers reduced motion or touch-only)
-  window.startFireCursor();
-
-})();
-</script>
- 
-<script>
-  // Toggle the fire cursor and hydrant icon on click
-  document.addEventListener('DOMContentLoaded', function () {
-    const hydrantImg = document.querySelector('#hydrant img');
-    if (!hydrantImg) return;
-
-    function updateIcon() {
-      hydrantImg.src = window.isFireCursorActive
-        ? 'static/icons/hydrant.png'         // fire ON → regular hydrant
-        : 'static/icons/hydrantWater.png';   // fire OFF → water hydrant
-    }
-
-    // Initialize icon based on current fire state
-    updateIcon();
-
-    hydrantImg.addEventListener('click', function () {
-      if (window.isFireCursorActive) {
-        // Turn OFF
-        window.stopFireCursor();
-      } else {
-        // Turn ON
-        window.startFireCursor();
-      }
+      // Initialize icon based on current fire state
       updateIcon();
+
+      hydrantImg.addEventListener('click', function () {
+        if (window.isFireCursorActive) {
+          // Turn OFF
+          window.stopFireCursor();
+        } else {
+          // Turn ON
+          window.startFireCursor();
+        }
+        updateIcon();
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 
