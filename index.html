@@ -1026,9 +1026,11 @@
       position: relative;
       top: 50%;
       width: 8em;
-      justify-self: center;
-      justify-content: center;
+    
+      margin-inline: auto;   /* ← Safari-safe horizontal centering */
+    
       display: flex;
+      justify-content: center;
       color: rgb(69, 69, 69);
     }
 
