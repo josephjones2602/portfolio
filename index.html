@@ -1026,9 +1026,10 @@
       position: relative;
       top: 50%;
       width: 8em;
-    
-      margin-inline: auto;   /* ← Safari-safe horizontal centering */
-    
+
+      margin-inline: auto;
+      /* ← Safari-safe horizontal centering */
+
       display: flex;
       justify-content: center;
       color: rgb(69, 69, 69);
@@ -1087,6 +1088,74 @@
 
     .spotlight:last-child {
       margin-left: -100px;
+    }
+
+
+    /* ================== VIDEO THUMBNAIL PLAY BADGE ================== */
+    .video-thumb {
+      position: relative;
+      display: inline-block;
+      border-radius: 22px;
+      /* matches .campaign-hero rounding */
+      overflow: hidden;
+      /* ensure badge stays clipped */
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+      /* same visual weight */
+    }
+
+    .video-thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Centered circular play badge */
+    .play-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+      display: grid;
+      place-items: center;
+      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    /* Triangle icon */
+    .play-badge::before {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 24px solid #fff;
+      /* triangle color */
+      border-top: 16px solid transparent;
+      border-bottom: 16px solid transparent;
+      transform: translateX(2px);
+      /* micro optical adjustment */
+    }
+
+    /* Hover / focus effects to signal interactivity */
+    .video-thumb:hover .play-badge,
+    .video-thumb:focus .play-badge {
+      transform: translate(-50%, -50%) scale(1.08);
+      background: rgba(0, 0, 0, 0.75);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Ensure keyboard focus ring is visible */
+    .video-thumb {
+      outline: none;
+    }
+
+    .video-thumb:focus-visible {
+      box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.65);
+      /* accent-colored focus ring */
+      border-radius: 22px;
     }
 
     /* ======= Fire cursor overlay ======= */
@@ -1324,6 +1393,17 @@
       .phone-arrow.next {
         right: -25px;
       }
+
+      .play-badge {
+        width: 72px;
+        height: 72px;
+      }
+
+      .play-badge::before {
+        border-left: 20px solid #fff;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+      }
     }
   </style>
 </head>
@@ -1334,10 +1414,10 @@
     <a href="#hero">Home</a>
     <a href="#print-campaign">Print Campaign</a>
     <a href="#360-campaign">360 Campaign</a>
-    <a href="#prod-media-element">Videos</a>
+    <a href="#prod-media-element">Hinge Video</a>
     <a href="#breadth-of-work">Breadth of Work</a>
-    <a href="#best-one-off">Hot Hands Campaign</a>
-    <a href="#passion-project">My Passion Project</a>
+    <a href="#best-one-off">Hot Hands</a>
+    <a href="#passion-project">Passion Project</a>
     <a href="#contact">Contact</a>
   </nav>
 
@@ -1520,23 +1600,25 @@
       </div>
   </section>
 
+
   <section id="prod-media-element">
     <h2 class="section-title">Hinge Video</h2>
-    <div class="prod-media-wrapper">
-      <div class="prod-video-card">
-        <div class="video-responsive">
-          <iframe id="videoFrame" src="https://www.youtube.com/embed/v=wHKXKOennJc" title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </div>
+
+    <!-- Make the thumbnail obviously clickable with a centered play badge -->
+    <div class="campaign-hero">
+      <a class="video-thumb" href="https://www.youtube.com/watch?v=wHKXKOennJc" target="_blank"
+        rel="noopener noreferrer" aria-label="Play Hinge video on YouTube" title="Play Hinge video">
+        <img src="static/images/HingeVideo/HingeVideoThumbnail.png"
+          alt="Hinge Video thumbnail — click to play on YouTube" loading="lazy">
+        <span class="play-badge" aria-hidden="true"></span>
+      </a>
     </div>
+
     <div class="img-credits">
       <p>Copywriter: Joseph Jones · Art Directors: Bella Hsiung and Liz Beckwith · Content Creator: Skyler Chapman</p>
     </div>
   </section>
+
 
   <section id="breadth-of-work">
     <h2 class="section-title">Breadth of Work</h2>
