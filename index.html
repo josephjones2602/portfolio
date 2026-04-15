@@ -516,7 +516,11 @@
     .book-link:hover .book {
       transform: rotateY(-22deg) translateY(-4px);
     }
+  
+    /* ================== FROSTED MINI WHEATS ================== */
 
+<a href="#frosted-mini-wheats">Mini Wheats</a>
+    
     /* ================== COVER ================== */
     .book-cover {
       position: absolute;
@@ -1462,15 +1466,11 @@
       </div>
       <div class="bio-text">
         <p>
-          I like to set people on fire. When someone says, "Woah, it's perfect." and all of a sudden
-          everyone's hip, fist, or mouth bumping, then I know I've done well. That's why I choose
+          I like to set people on fire. That's why I choose
           advertising; setting other people on fire also sets me on fire.
-          <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. I have six
-          sexy siblings and parents I would die for. I believe the best way to set someone on fire
-          is to make a person say, “I know exactly what he’s talking about.”<br><br>
-          TLDR: ring true. Like a fire alarm.<br><br>
+          <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. <br><br>
           I’m always looking for ways to improve or collaborate. Contact me at my email and I’ll get back
-          to you as quickly as I can.
+          to you in the flare of a match.
         </p>
         <a href="#contact" class="resume-btn" target="_blank">Contact Me</a>
       </div>
@@ -2370,6 +2370,59 @@
     });
   </script>
 
+<script>
+    /* ==========================================================
+       FROSTED MINI WHEATS IPSUM GENERATOR
+    ========================================================== */
+    const wordsRaw = `kitchen pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start of day first meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform repetitive modular stackable geometric cube brick tile grid pattern`;
+
+    const wordList = wordsRaw.split(/\s+/);
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateSentence(minWords = 8, maxWords = 20) {
+      const length = getRandomInt(minWords, maxWords);
+      let sentenceWords = [];
+      for (let i = 0; i < length; i++) {
+        sentenceWords.push(wordList[getRandomInt(0, wordList.length - 1)]);
+      }
+      let sentence = sentenceWords.join(" ");
+      return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
+    }
+
+    function generateParagraph(minSentences = 3, maxSentences = 6) {
+      const numSentences = getRandomInt(minSentences, maxSentences);
+      let sentences = [];
+      for (let i = 0; i < numSentences; i++) {
+        sentences.push(generateSentence());
+      }
+      return sentences.join(" ");
+    }
+
+    function generateMiniWheatsIpsum() {
+      const inputEl = document.getElementById("ipsum-paragraphs");
+      const outputEl = document.getElementById("ipsum-output");
+      
+      let n = parseInt(inputEl.value);
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 20) n = 20; // Keep it from crashing the browser if someone types 9999
+
+      let paragraphs = [];
+      for (let i = 0; i < n; i++) {
+        paragraphs.push(generateParagraph());
+      }
+      
+      outputEl.innerText = paragraphs.join("\n\n");
+    }
+
+    // Auto-generate some text when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      generateMiniWheatsIpsum();
+    });
+  </script>
+  
 </body>
 
 </html>
