@@ -951,6 +951,35 @@
       transform: translateZ(120px) translateY(10px);
     }
 
+ /* ================== MINI WHEAT NO MORE EMPTY ================== */
+
+<section id="frosted-mini-wheats">
+    <h2 class="section-title">Frosted Mini Wheats</h2>
+    
+    <div class="brand">
+      <h3>Mini Wheats Ipsum Generator</h3>
+      <div class="ads" style="flex-direction: column; align-items: center;">
+        
+        <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
+          <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+            Instead of standard Latin filler text, I built a custom script to generate placeholder copy using a word bank designed around the "sweet-meets-wheat" duality of Frosted Mini Wheats. Try it out!
+          </p>
+          
+          <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
+            <label for="ipsum-paragraphs" style="color: var(--accent); font-weight: 600;">Paragraphs:</label>
+            <input type="number" id="ipsum-paragraphs" min="1" max="10" value="3" 
+                   style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--accent); background: rgba(0,0,0,0.5); color: var(--text-main); width: 60px; font-family: 'Inter', sans-serif;">
+            <button onclick="generateMiniWheatsIpsum()" class="resume-btn" style="margin-top: 0; padding: 0.5rem 1.2rem;">Generate</button>
+          </div>
+
+          <div id="ipsum-output" style="background: rgba(0, 0, 0, 0.45); padding: 2rem; border-radius: 12px; font-family: 'Inter', sans-serif; white-space: pre-wrap; text-align: left; min-height: 200px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); color: var(--text-muted); line-height: 1.8;">
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+    
     /* ================== FOLDERS ================== */
 
     .folders {
