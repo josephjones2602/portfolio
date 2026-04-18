@@ -168,6 +168,9 @@
       width: 280px;
       height: 360px;
       cursor: pointer;
+      /* Define JS-updated mouse positions, default to center */
+      --char-x: 50%;
+      --char-y: 50%;
     }
 
     .profile-pic {
@@ -183,70 +186,57 @@
       left: 0;
     }
 
-    #skeleton-img {
-      opacity: 0;
-      z-index: 1;
-      transition: opacity 0.5s ease 0s;
-    }
-
-    #joseph-img {
-      opacity: 1;
-      z-index: 2;
-      filter: brightness(1) grayscale(0);
-      transition: opacity 0.5s ease 0s, filter 0.5s ease 0s;
-    }
+    /* stack order */
+    #skeleton-img { z-index: 1; opacity: 1; }
+    /* A black layer beneath Joseph that makes him 'char' */
+    .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
+    #joseph-img { z-index: 3; opacity: 1; }
 
     /* Base Hover (Applies regardless of fire cursor state) */
-    .profile-wrapper:hover .profile-pic,
-    .profile-wrapper:hover::after {
+    .profile-wrapper:hover .profile-pic {
       transform: scale(1.08) rotate(1deg);
     }
 
-    /* The Black Spots and Lines Overlay (Hidden by default) */
-    .profile-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 5px; /* Sits cleanly inside the accent border */
-      border-radius: 45%;
-      background-image: 
-        radial-gradient(circle at 20px 30px, #111 6px, transparent 7px),
-        radial-gradient(circle at 60px 80px, #111 10px, transparent 11px),
-        radial-gradient(circle at 100px 40px, #111 5px, transparent 6px),
-        repeating-linear-gradient(45deg, transparent, transparent 15px, #111 15px, #111 18px),
-        repeating-linear-gradient(-45deg, transparent, transparent 25px, #111 25px, #111 28px);
-      background-size: 120px 120px;
-      background-position: 0px 0px;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 3;
-      transition: transform 0.6s ease;
+    /* Resting State for Joseph - fully visible mask */
+    #joseph-img {
+      mask-image: radial-gradient(circle 20px at var(--char-x) var(--char-y), black 0%, black 100%);
+      mask-size: 300% 300%; /* Make mask much larger than image */
+      mask-position: center;
+      filter: brightness(1) grayscale(0);
+      transition: 
+        transform 0.6s ease,
+        filter 0.5s ease,
+        mask-image 0.5s ease; /* smooth reset on mouseleave */
     }
 
     /* Hover State ONLY when Fire Cursor is ON */
-    body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
-      opacity: 0;
-      filter: brightness(0.2) grayscale(1); /* Chars to blackish gray */
-      /* Filter changes first, then drops opacity after 0.6s delay */
-      transition: filter 0.6s ease 0s, opacity 0.8s ease 0.6s;
-    }
-
-    body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
+    
+    /* 1. Turn the black base opaque under Joseph */
+    body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
       opacity: 1;
-      /* Waits for Joseph to char for 0.6s, then fades in */
-      transition: opacity 0.8s ease 0.6s;
     }
 
-    body.fire-cursor-enabled .profile-wrapper:hover::after {
-      animation: charMoveOverlay 1.8s forwards linear;
+    /* 2. Joseph chars to gray-black and is dissolved by mask spreading from cursor */
+    body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
+      filter: brightness(0.3) grayscale(1);
+      
+      /* The mask spreads from mouse coordinates. Note: using circle size requires complex JS to be perfect, 
+         using percentage creates a natural 'dissolving' spread look */
+      mask-image: radial-gradient(
+        circle closest-side at var(--char-x) var(--char-y), 
+        transparent 0%, 
+        transparent 10%, 
+        black 50%, 
+        black 100%
+      );
+      
+      /* Speed up mask movement to match natural charring look */
+      transition: 
+        transform 0.6s ease,
+        filter 0.6s ease,
+        mask-image 0s linear; /* JS handles coordinates instantly, native CSS handles blend */
     }
-
-    /* Sweeps the spots and lines diagonally across the image */
-    @keyframes charMoveOverlay {
-      0%   { opacity: 0; background-position: 0px 0px; }
-      20%  { opacity: 0.95; }
-      80%  { opacity: 0.95; background-position: -60px -80px; }
-      100% { opacity: 0; background-position: -80px -100px; }
-    }
+    
     /* ----------------------- */
 
     .bio-text {
@@ -1254,8 +1244,6 @@
       /* Disable hover-only effects on touch */
       .profile-wrapper:hover .profile-pic,
       .profile-wrapper:active .profile-pic,
-      .profile-wrapper:hover::after,
-      .profile-wrapper:active::after,
       .brand:hover,
       .ad-card:hover,
       .highlighted-image:hover,
@@ -1265,7 +1253,17 @@
         filter: none;
       }
 
-      /* Allow simple snap swap on mobile tap (No char effect since fire is desktop only) */
+      /* Disable dynamic JS masking on mobile performance reasons and lack of cursor */
+      .profile-wrapper {
+        --char-x: 50% !important;
+        --char-y: 50% !important;
+      }
+      
+      #joseph-img {
+        mask-image: none !important; /* disable masking */
+      }
+
+      /* Allow simple swap on mobile tap (No char effect since fire is desktop only) */
       .profile-wrapper:active #joseph-img {
         opacity: 0;
       }
@@ -1475,8 +1473,9 @@
   <header class="hero" id="hero">
     <div class="hero-content">
       <div class="hero-identity">
-        <div class="profile-wrapper">
+        <div class="profile-wrapper" id="profilePicContainer">
           <img src="static/images/Joseph Jones Skeleton Portrait.jpeg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
+          <div class="profile-pic char-black-base"></div>
           <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
         </div>
         <h1 class="hero-name">Joseph Jones</h1>
@@ -2478,6 +2477,42 @@
     });
   </script>
   
+  <script>
+    /* ==========================================================
+       PROFILE PIC Mouse Tracking for Char Effect
+       ========================================================== */
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('profilePicContainer');
+      if (!container) return;
+
+      container.addEventListener('mousemove', function (e) {
+        // Optimization: Only run calculations if fire cursor is actually on
+        if (!window.isFireCursorActive) return;
+
+        const rect = container.getBoundingClientRect();
+        
+        // Calculate mouse position relative to the container as percentages
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        // Update CSS variables defined on the container
+        container.style.setProperty('--char-x', x + '%');
+        container.style.setProperty('--char-y', y + '%');
+      });
+      
+      // Optional: Reset mask to center on mouseleave
+      container.addEventListener('mouseleave', function() {
+        // Add a slight delay to allow the CSS transition to play nicely
+        setTimeout(() => {
+            if (!container.matches(':hover')) {
+                container.style.setProperty('--char-x', '50%');
+                container.style.setProperty('--char-y', '50%');
+            }
+        }, 100);
+      });
+    });
+  </script>
+
 </body>
 
 </html>
