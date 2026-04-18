@@ -1456,7 +1456,7 @@
         
         <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
           <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
-            Instead of standard Latin filler text, I built a custom script to generate placeholder copy using a word bank designed around the "sweet-meets-wheat" duality of Frosted Mini Wheats. Try it out!
+            Somtimes we have nothing to say. But that's okay, because mini-wheats can fill that space for you. 
           </p>
           
           <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
@@ -2077,10 +2077,22 @@
 
     });
 
+    <script>
     /* ==========================================================
-       FROSTED MINI WHEATS IPSUM GENERATOR
+       FROSTED MINI WHEATS IPSUM GENERATOR & FLOATERS
     ========================================================== */
-    const wordsRaw = `kitchen pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start of day first meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform repetitive modular stackable geometric cube brick tile grid pattern`;
+    
+   <script>
+    /* ==========================================================
+       FROSTED MINI WHEATS IPSUM GENERATOR & FLOATERS
+    ========================================================== */
+    
+    // --- FLOATER CONFIGURATION VARIABLES ---
+    const FLOATER_IMAGE_SRC = 'static/images/MiniWheat.png'; //
+    const FLOATER_IMAGE_COUNT = 10; // Controls how many images appear
+    const FLOATER_IMAGE_SIZE = '65px'; // Controls the size of the images
+
+    const wordsRaw = `kitchen Kellog's no-more-empty-ever pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start-of-day first-meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform Heaven-sent I'm-gonna-burst repetitive modular stackable geometric cube brick tile grid pattern`;
 
     const wordList = wordsRaw.split(/\s+/);
 
@@ -2123,9 +2135,86 @@
       outputEl.innerText = paragraphs.join("\n\n");
     }
 
-    // Auto-generate some text when the page loads
+    // --- FLOATING IMAGES LOGIC ---
+    function injectFloaterStyles() {
+      // Prevent injecting styles multiple times
+      if (document.getElementById('floater-styles')) return;
+      
+      const style = document.createElement('style');
+      style.id = 'floater-styles';
+      style.innerHTML = `
+        @keyframes floatRandomMotion {
+          0%   { transform: translate(0, 0) rotate(0deg); }
+          25%  { transform: translate(20px, -30px) rotate(15deg); }
+          50%  { transform: translate(-10px, -50px) rotate(-5deg); }
+          75%  { transform: translate(-30px, 10px) rotate(-20deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .mini-wheat-floater {
+          position: absolute;
+          pointer-events: none; /* Let clicks pass through to the button */
+          z-index: 0; /* Keep behind the main content card */
+          opacity: 0.85; 
+          animation: floatRandomMotion 12s infinite ease-in-out;
+        }
+        /* Ensure the brand container clips the floaters and layers correctly */
+        #frosted-mini-wheats .brand {
+          position: relative;
+          overflow: hidden;
+        }
+        /* Ensure the generator card sits visually above the floaters */
+        #frosted-mini-wheats .ad-card {
+          position: relative;
+          z-index: 1;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function createFloaters() {
+      const section = document.getElementById('frosted-mini-wheats');
+      if (!section) return;
+      
+      const brandDiv = section.querySelector('.brand');
+      if (!brandDiv) return;
+
+      injectFloaterStyles();
+
+      for (let i = 0; i < FLOATER_IMAGE_COUNT; i++) {
+        const img = document.createElement('img');
+        img.src = FLOATER_IMAGE_SRC;
+        img.className = 'mini-wheat-floater';
+        img.style.width = FLOATER_IMAGE_SIZE;
+        img.style.height = 'auto';
+
+        // Randomize starting side: ~50% chance for left vs right edge
+        const isLeft = Math.random() > 0.5;
+        if (isLeft) {
+          img.style.left = Math.floor(Math.random() * 15) + '%'; // 0% to 15% from left side
+        } else {
+          img.style.right = Math.floor(Math.random() * 15) + '%'; // 0% to 15% from right side
+        }
+
+        // Random vertical placement
+        img.style.top = Math.floor(Math.random() * 85) + '%'; // 0% to 85% from top
+
+        // Randomize animation duration and delay so they move independently
+        const duration = 10 + Math.random() * 10; // Between 10s and 20s
+        const delay = Math.random() * 10; // Between 0s and 10s
+        
+        img.style.animationDuration = duration + 's';
+        
+        // Negative delay makes them start mid-animation so they aren't all synced up
+        img.style.animationDelay = '-' + delay + 's'; 
+
+        brandDiv.appendChild(img);
+      }
+    }
+
+    // Auto-generate some text and add floaters when the page loads
     document.addEventListener("DOMContentLoaded", () => {
       generateMiniWheatsIpsum();
+      createFloaters();
     });
   </script>
 
