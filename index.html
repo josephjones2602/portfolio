@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joseph Jones | Copywriter Portfolio</title>
 
-  <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
     rel="stylesheet">
@@ -94,18 +93,15 @@
     }
 
     /* ================== HYDRANT ================== */
-    /* Fix hydrant button to the bottom-right corner */
     #hydrant {
       position: fixed;
       bottom: 16px;
       right: 16px;
       z-index: 10001;
-      /* above most content, but below modal controls if needed */
     }
 
     #hydrant img {
       width: 64px;
-      /* tweak size as you like */
       height: auto;
       cursor: pointer;
       user-select: none;
@@ -118,23 +114,6 @@
       transform: scale(0.96);
     }
 
-    #joseph-img {
-      display: block;
-    }
-
-    #joseph-img:hover {
-      display: none;
-    }
-
-    #skeleton-img {
-      display: none;
-    }
-
-    #skeleton-img:hover {
-      display: block;
-    }
-
-    /* ================== Image Wrapper ========= */
     .img-wrapper {
       width: auto;
       height: 100%;
@@ -183,20 +162,45 @@
       animation: fadeUp 1.2s ease both;
     }
 
-    .profile-pic {
+    /* --- PROFILE PIC FIX --- */
+    .profile-wrapper {
+      position: relative;
       width: 280px;
       height: 360px;
+      cursor: pointer;
+    }
+
+    .profile-pic {
+      width: 100%;
+      height: 100%;
       border-radius: 45%;
       object-fit: cover;
       border: 5px solid var(--accent);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      transition: transform 0.6s ease, filter 0.6s ease;
+      transition: transform 0.6s ease, filter 0.6s ease, opacity 0.4s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
-    .profile-pic:hover {
+    #skeleton-img {
+      opacity: 0;
+    }
+
+    /* Toggles on wrapper hover */
+    .profile-wrapper:hover .profile-pic {
       transform: scale(1.08) rotate(1deg);
+    }
+
+    .profile-wrapper:hover #joseph-img {
+      opacity: 0;
+    }
+
+    .profile-wrapper:hover #skeleton-img {
+      opacity: 1;
       filter: sepia(80%);
     }
+    /* ----------------------- */
 
     .bio-text {
       max-width: 600px;
@@ -432,15 +436,12 @@
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
     }
 
-    /* Ensure image + caption together fit the viewport */
     .image-modal img {
       max-width: 90vw;
       max-height: 78vh;
-      /* slightly reduced to make room for caption */
       border-radius: 16px;
       transition: opacity 0.5s ease;
     }
-
 
     /* ================== RADIO SPOT MODAL ================== */
     .radio-spot-modal {
@@ -528,7 +529,6 @@
       transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
     }
 
-    /* Subtle open angle */
     .book-link:hover .book {
       transform: rotateY(-22deg) translateY(-4px);
     }
@@ -713,7 +713,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      /* 👈 key line */
       object-position: center;
       border-radius: 18px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -992,18 +991,14 @@
       background: linear-gradient(145deg, #f0e7d6, #d6c7a8);
       border-radius: 4px 4px 6px 6px;
       position: relative;
-      /* changed from relative */
       bottom: 80px;
-      /* aligns the bottom of folder with parent */
       cursor: pointer;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
       transition: transform 0.35s ease, box-shadow 0.35s ease;
       display: flex;
       align-items: center;
-      /* make label start at bottom */
       justify-content: center;
       padding-bottom: 8px;
-      /* space for label */
     }
 
     /* TAB */
@@ -1021,7 +1016,6 @@
     /* LABEL */
     .folder span {
       writing-mode: vertical-rl;
-      /* make text vertical */
       text-orientation: mixed;
       font-size: 0.65rem;
       font-weight: 600;
@@ -1044,8 +1038,6 @@
       width: 8em;
 
       margin-inline: auto;
-      /* ← Safari-safe horizontal centering */
-
       display: flex;
       justify-content: center;
       color: rgb(69, 69, 69);
@@ -1112,11 +1104,8 @@
       position: relative;
       display: inline-block;
       border-radius: 22px;
-      /* matches .campaign-hero rounding */
       overflow: hidden;
-      /* ensure badge stays clipped */
       box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
-      /* same visual weight */
     }
 
     .video-thumb img {
@@ -1148,14 +1137,11 @@
       width: 0;
       height: 0;
       border-left: 24px solid #fff;
-      /* triangle color */
       border-top: 16px solid transparent;
       border-bottom: 16px solid transparent;
       transform: translateX(2px);
-      /* micro optical adjustment */
     }
 
-    /* Hover / focus effects to signal interactivity */
     .video-thumb:hover .play-badge,
     .video-thumb:focus .play-badge {
       transform: translate(-50%, -50%) scale(1.08);
@@ -1163,14 +1149,12 @@
       box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
     }
 
-    /* Ensure keyboard focus ring is visible */
     .video-thumb {
       outline: none;
     }
 
     .video-thumb:focus-visible {
       box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.65);
-      /* accent-colored focus ring */
       border-radius: 22px;
     }
 
@@ -1181,17 +1165,13 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      /* never block clicks/hover */
       z-index: 10000;
-      /* above everything */
     }
 
-    /* Hide the default cursor when our effect is active */
     .fire-cursor-enabled {
       cursor: none;
     }
 
-    /* Keep the default cursor for form fields, embedded iframes, and editable areas */
     input,
     textarea,
     select,
@@ -1216,9 +1196,6 @@
 
     /*==================== RESPONSIVE DESIGN ================== */
 
-    /* =========================================================
-   MOBILE OPTIMIZATION (TABLET + PHONE)
-   ========================================================= */
     @media (max-width: 768px) {
 
       /* ---------- PERFORMANCE ---------- */
@@ -1230,7 +1207,8 @@
       }
 
       /* Disable hover-only effects on touch */
-      .profile-pic:hover,
+      .profile-wrapper:hover .profile-pic,
+      .profile-wrapper:active .profile-pic,
       .brand:hover,
       .ad-card:hover,
       .highlighted-image:hover,
@@ -1266,9 +1244,18 @@
         font-size: 1.8rem;
       }
 
-      .profile-pic {
+      /* Target the wrapper for dimensions */
+      .profile-wrapper {
         width: 200px;
         height: 260px;
+      }
+
+      /* Allow swap on mobile tap */
+      .profile-wrapper:active #joseph-img {
+        opacity: 0;
+      }
+      .profile-wrapper:active #skeleton-img {
+        opacity: 1;
       }
 
       .bio-text {
@@ -1374,9 +1361,6 @@
       }
     }
 
-    /* =========================================================
-   SMALL PHONES (≤ 480px)
-   ========================================================= */
     @media (max-width: 480px) {
 
       nav a {
@@ -1384,7 +1368,7 @@
         padding: 0.4rem 0.6rem;
       }
 
-      .profile-pic {
+      .profile-wrapper {
         width: 150px;
         height: 200px;
       }
@@ -1445,8 +1429,10 @@
   <header class="hero" id="hero">
     <div class="hero-content">
       <div class="hero-identity">
-        <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
-         <img src="static/images/Joseph Jones Skeleton Portrait.jpg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
+        <div class="profile-wrapper">
+          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
+          <img src="static/images/Joseph Jones Skeleton Portrait.jpg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
+        </div>
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
       <div class="bio-text">
@@ -1461,8 +1447,6 @@
       </div>
     </div>
   </header>
-
-  <!--/* ================== MINI WHEAT NO MORE EMPTY ================== */-->
 
   <section id="frosted-mini-wheats">
     <h2 class="section-title">Frosted Mini Wheats</h2>
@@ -1515,60 +1499,13 @@
           </div>
 
         </div>
-        <!--
-        <div class="ad-card">
-          <h4>Radio Spot</h4>
-          <div class="image-group"
-            onclick="openImage(['static/images/OldBay/OldBayRadio1.png','static/images/OldBay/OldBayRadio2.png'], 0)">
-            <img src="static/images/OldBay/OldBayRadio1.png" class="image-preview">
-            <img src="static/images/OldBay/OldBayRadio2.png" class="image-preview">
-          </div>
-        </div>-->
       </div>
     </div>
-
-    <!--
-    <div class="brand">
-      <h3>Topo Chico</h3>
-      <div class="ads">
-        <div class="ad-card">
-          <h4>Print Campaign</h4>
-          <div class="image-group" onclick="openImage(
-              ['static/images/TopoChico/TopoChico1.png',
-              'static/images/TopoChico/TopoChico2.png',
-              'static/images/TopoChico/TopoChico3.png'],
-              0,
-              ['Concept & Copywriting: Joseph Jones · Images generated with AI',
-              'Concept & Copywriting: Joseph Jones · Images generated with AI',
-              'Concept & Copywriting: Joseph Jones · Images generated with AI'])">
-            <img src="static/images/TopoChico/TopoChico1.png" class="image-preview">
-            <img src="static/images/TopoChico/TopoChico2.png" class="image-preview">
-            <img src="static/images/TopoChico/TopoChico3.png" class="image-preview">
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
-
-    <!--
-    <div class="brand">
-      <h3>Mother's Animal Cookies</h3>
-      <div class="ads">
-        <div class="ad-card">
-          <h4>Radio Spot</h4>
-          <div class="image-group" onclick="openImage(['static/images/MothersAnimalCookies/AnimalCookies.png'], 0)">
-            <img src="static/images/MothersAnimalCookies/AnimalCookies.png" class="image-preview">
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
   </section>
 
   <section id="360-campaign">
     <h2 class="section-title">Patagonia 360° Campaign</h2>
 
-    <!-- HERO IMAGE -->
     <div class="campaign-hero">
       <img src="static/images/Patagonia360/EscAdd.jpeg" alt="360 Campaign Hero">
     </div>
@@ -1576,7 +1513,6 @@
       <p>Copywriter: Joseph Jones · Art Directors: Kate Anderson and Jane Smith · Content Creator: Brayden Merrill</p>
     </div>
 
-    <!-- HERO IMAGE 2 -->
     <div class="campaign-hero">
       <img src="static/images/Patagonia360/GameTrail.png" alt="Game Trail Campaign Hero">
     </div>
@@ -1584,7 +1520,6 @@
       <p>Concept & Copywriting: Joseph Jones</p>
     </div>
 
-    <!-- DESKTOP / OOH CAROUSEL -->
     <div class="campaign-carousel">
       <button class="campaign-arrow prev" aria-label="Previous slide">&#10094;</button>
 
@@ -1603,7 +1538,6 @@
     </div>
 
 
-    <!-- PHONE MOCKUP -->
     <div class="phone-section">
       <div class="phone-carousel-wrapper">
         <button class="phone-arrow prev">&#10094;</button>
@@ -1646,7 +1580,6 @@
   <section id="prod-media-element">
     <h2 class="section-title">Hinge Video</h2>
 
-    <!-- Make the thumbnail obviously clickable with a centered play badge -->
     <div class="campaign-hero">
       <a class="video-thumb" href="https://www.youtube.com/watch?v=wHKXKOennJc" target="_blank"
         rel="noopener noreferrer" aria-label="Play Hinge video on YouTube" title="Play Hinge video">
@@ -1667,16 +1600,13 @@
 
     <div class="cabinet-stage">
       <div class="filing-cabinet" id="cabinet">
-        <!-- TOP DRAWER -->
         <div class="drawer" data-drawer="0">
           <div class="drawer-handle"></div>
         </div>
 
-        <!-- MIDDLE DRAWER (ACTIVE) -->
         <div class="drawer active" data-drawer="1">
           <div class="drawer-handle"></div>
 
-          <!-- FOLDERS -->
           <div class="folders">
             <div class="folder" data-pdf="static/images/NewBreadthOfWork/BookCover.pdf">
               <span>Winnie-The-Pooh - Book Cover</span>
@@ -1708,7 +1638,6 @@
           </div>
         </div>
 
-        <!-- BOTTOM DRAWER -->
         <div class="drawer" data-drawer="2">
           <div class="drawer-handle"></div>
           <div class="cabinet-tag">
@@ -1717,19 +1646,6 @@
         </div>
       </div>
     </div>
-
-    <!--<div class="ads">
-      <div class="ad-card">
-        <h4>Miscellaneous Work</h4>
-        <div class="image-group"
-          onclick="openImage(['static/images/BreadthOfWork/SocietyInfluence MediaConferencePoster.png','static/images/BreadthOfWork/MediaMeCollage.png','static/images/BreadthOfWork/7MoreDays.png'],0)">
-          <img src="static/images/BreadthOfWork/SocietyInfluence MediaConferencePoster.png" class="image-preview">
-          <img src="static/images/BreadthOfWork/MediaMeCollage.png" class="image-preview">
-          <img src="static/images/BreadthOfWork/7MoreDays.png" class="image-preview">
-        </div>
-      </div>
-    </div>
-    -->
   </section>
 
 
@@ -1792,7 +1708,6 @@
     <span class="image-prev" onclick="prevImage(event)">&#10094;</span>
     <span class="image-next" onclick="nextImage(event)">&#10095;</span>
 
-    <!-- Use figure so we can have a semantic caption -->
     <figure class="image-modal-figure" onclick="event.stopPropagation()">
       <img id="modalImage" alt="Expanded portfolio image">
       <figcaption id="imageCaption" class="image-caption"></figcaption>
@@ -1808,7 +1723,6 @@
     <audio controls id="radioAudio"></audio>
   </div>
 
-  <!-- 🔥 Fire cursor overlay -->
   <canvas id="fireCursorCanvas" aria-hidden="true"></canvas>
 
   <script>
@@ -2101,7 +2015,7 @@
     // --- FLOATER CONFIGURATION VARIABLES ---
     const FLOATER_IMAGE_SRC = 'static/images/MiniWheats/MiniWheat.png'; //
     const FLOATER_IMAGE_COUNT = 10; // Controls how many images appear
-    const FLOATER_IMAGE_SIZE = '200px'; // Controls the size of the images
+    const FLOATER_IMAGE_SIZE = '65px'; // Controls the size of the images
 
     const wordsRaw = `kitchen Kellog's no-more-empty-ever pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start-of-day first-meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform Heaven-sent I'm-gonna-burst repetitive modular stackable geometric cube brick tile grid pattern`;
 
