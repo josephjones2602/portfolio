@@ -177,45 +177,75 @@
       object-fit: cover;
       border: 5px solid var(--accent);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transition: transform 0.6s ease;
       position: absolute;
       top: 0;
       left: 0;
     }
 
-    /* Base states (Resting) */
-    #joseph-img {
-      opacity: 1;
-      filter: brightness(1) contrast(1) sepia(0);
-      /* When mouse leaves: fade opacity back quickly, restore color slowly */
-      transition: transform 0.6s ease, opacity 0.4s ease, filter 0.8s ease 0.4s;
-      z-index: 2;
-    }
-
     #skeleton-img {
       opacity: 0;
-      filter: brightness(0.3) sepia(1) hue-rotate(320deg); /* Starts dark to emerge from the "ash" */
-      transition: transform 0.6s ease, opacity 0.4s ease, filter 0.4s ease;
       z-index: 1;
+      transition: opacity 0.5s ease 0s;
     }
 
-    /* Hover states (Burning) */
-    .profile-wrapper:hover .profile-pic {
+    #joseph-img {
+      opacity: 1;
+      z-index: 2;
+      filter: brightness(1) grayscale(0);
+      transition: opacity 0.5s ease 0s, filter 0.5s ease 0s;
+    }
+
+    /* Base Hover (Applies regardless of fire cursor state) */
+    .profile-wrapper:hover .profile-pic,
+    .profile-wrapper:hover::after {
       transform: scale(1.08) rotate(1deg);
     }
 
-    .profile-wrapper:hover #joseph-img {
-      /* Char black with a fiery high-contrast edge */
-      filter: brightness(0.15) contrast(200%) sepia(1) hue-rotate(-50deg) saturate(400%);
+    /* The Black Spots and Lines Overlay (Hidden by default) */
+    .profile-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 5px; /* Sits cleanly inside the accent border */
+      border-radius: 45%;
+      background-image: 
+        radial-gradient(circle at 20px 30px, #111 6px, transparent 7px),
+        radial-gradient(circle at 60px 80px, #111 10px, transparent 11px),
+        radial-gradient(circle at 100px 40px, #111 5px, transparent 6px),
+        repeating-linear-gradient(45deg, transparent, transparent 15px, #111 15px, #111 18px),
+        repeating-linear-gradient(-45deg, transparent, transparent 25px, #111 25px, #111 28px);
+      background-size: 120px 120px;
+      background-position: 0px 0px;
       opacity: 0;
-      /* Filter darkens for 0.7s, then fades out after a 0.6s delay */
-      transition: transform 0.6s ease, filter 0.7s ease-in, opacity 0.8s ease 0.6s;
+      pointer-events: none;
+      z-index: 3;
+      transition: transform 0.6s ease;
     }
 
-    .profile-wrapper:hover #skeleton-img {
+    /* Hover State ONLY when Fire Cursor is ON */
+    body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
+      opacity: 0;
+      filter: brightness(0.2) grayscale(1); /* Chars to blackish gray */
+      /* Filter changes first, then drops opacity after 0.6s delay */
+      transition: filter 0.6s ease 0s, opacity 0.8s ease 0.6s;
+    }
+
+    body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
       opacity: 1;
-      filter: sepia(80%) brightness(1);
-      /* Waits for charring effect, then fades in */
-      transition: transform 0.6s ease, opacity 0.8s ease 0.6s, filter 0.8s ease 0.6s;
+      /* Waits for Joseph to char for 0.6s, then fades in */
+      transition: opacity 0.8s ease 0.6s;
+    }
+
+    body.fire-cursor-enabled .profile-wrapper:hover::after {
+      animation: charMoveOverlay 1.8s forwards linear;
+    }
+
+    /* Sweeps the spots and lines diagonally across the image */
+    @keyframes charMoveOverlay {
+      0%   { opacity: 0; background-position: 0px 0px; }
+      20%  { opacity: 0.95; }
+      80%  { opacity: 0.95; background-position: -60px -80px; }
+      100% { opacity: 0; background-position: -80px -100px; }
     }
     /* ----------------------- */
 
@@ -1224,6 +1254,8 @@
       /* Disable hover-only effects on touch */
       .profile-wrapper:hover .profile-pic,
       .profile-wrapper:active .profile-pic,
+      .profile-wrapper:hover::after,
+      .profile-wrapper:active::after,
       .brand:hover,
       .ad-card:hover,
       .highlighted-image:hover,
@@ -1231,6 +1263,14 @@
         transform: none;
         box-shadow: none;
         filter: none;
+      }
+
+      /* Allow simple snap swap on mobile tap (No char effect since fire is desktop only) */
+      .profile-wrapper:active #joseph-img {
+        opacity: 0;
+      }
+      .profile-wrapper:active #skeleton-img {
+        opacity: 1;
       }
 
       /* ---------- NAVIGATION ---------- */
@@ -1259,18 +1299,9 @@
         font-size: 1.8rem;
       }
 
-      /* Target the wrapper for dimensions */
       .profile-wrapper {
         width: 200px;
         height: 260px;
-      }
-
-      /* Allow swap on mobile tap */
-      .profile-wrapper:active #joseph-img {
-        opacity: 0;
-      }
-      .profile-wrapper:active #skeleton-img {
-        opacity: 1;
       }
 
       .bio-text {
@@ -1445,8 +1476,8 @@
     <div class="hero-content">
       <div class="hero-identity">
         <div class="profile-wrapper">
-          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
           <img src="static/images/Joseph Jones Skeleton Portrait.jpeg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
+          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
         </div>
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
