@@ -1250,6 +1250,22 @@
         font-size: 1.8rem;
       }
 
+      #joseph-img {
+        display: inline-block;
+      }
+
+      #joseph-img:hover {
+        display: hidden;
+      }
+
+      #skeleton-img {
+        display: hidden;
+      }
+
+      #skeleton-img:hover {
+        display: inline-block;
+      }
+
       .profile-pic {
         width: 200px;
         height: 260px;
@@ -1429,7 +1445,8 @@
   <header class="hero" id="hero">
     <div class="hero-content">
       <div class="hero-identity">
-        <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" class="profile-pic">
+        <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
+         <img src="static/images/Joseph Jones Skeleton Portrait.jpg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
       <div class="bio-text">
