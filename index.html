@@ -162,7 +162,7 @@
       animation: fadeUp 1.2s ease both;
     }
 
-    /* --- PROFILE PIC FIX --- */
+    /* --- PROFILE PIC CHAR & BURN ANIMATION --- */
     .profile-wrapper {
       position: relative;
       width: 280px;
@@ -177,28 +177,45 @@
       object-fit: cover;
       border: 5px solid var(--accent);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      transition: transform 0.6s ease, filter 0.6s ease, opacity 0.4s ease;
       position: absolute;
       top: 0;
       left: 0;
     }
 
-    #skeleton-img {
-      opacity: 0;
+    /* Base states (Resting) */
+    #joseph-img {
+      opacity: 1;
+      filter: brightness(1) contrast(1) sepia(0);
+      /* When mouse leaves: fade opacity back quickly, restore color slowly */
+      transition: transform 0.6s ease, opacity 0.4s ease, filter 0.8s ease 0.4s;
+      z-index: 2;
     }
 
-    /* Toggles on wrapper hover */
+    #skeleton-img {
+      opacity: 0;
+      filter: brightness(0.3) sepia(1) hue-rotate(320deg); /* Starts dark to emerge from the "ash" */
+      transition: transform 0.6s ease, opacity 0.4s ease, filter 0.4s ease;
+      z-index: 1;
+    }
+
+    /* Hover states (Burning) */
     .profile-wrapper:hover .profile-pic {
       transform: scale(1.08) rotate(1deg);
     }
 
     .profile-wrapper:hover #joseph-img {
+      /* Char black with a fiery high-contrast edge */
+      filter: brightness(0.15) contrast(200%) sepia(1) hue-rotate(-50deg) saturate(400%);
       opacity: 0;
+      /* Filter darkens for 0.7s, then fades out after a 0.6s delay */
+      transition: transform 0.6s ease, filter 0.7s ease-in, opacity 0.8s ease 0.6s;
     }
 
     .profile-wrapper:hover #skeleton-img {
       opacity: 1;
-      filter: sepia(80%);
+      filter: sepia(80%) brightness(1);
+      /* Waits for charring effect, then fades in */
+      transition: transform 0.6s ease, opacity 0.8s ease 0.6s, filter 0.8s ease 0.6s;
     }
     /* ----------------------- */
 
@@ -841,7 +858,6 @@
       right: -60px;
     }
 
-
     /* BRAND EXTENSION IMAGES */
     .campaign-brand .ads {
       display: flex;
@@ -916,7 +932,6 @@
       justify-content: center;
       perspective: 1400px;
       margin-bottom: 5rem;
-      ;
     }
 
     .filing-cabinet {
