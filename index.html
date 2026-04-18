@@ -516,10 +516,6 @@
     .book-link:hover .book {
       transform: rotateY(-22deg) translateY(-4px);
     }
-  
-    /* ================== FROSTED MINI WHEATS ================== */
-
-<a href="#frosted-mini-wheats">Mini Wheats</a>
     
     /* ================== COVER ================== */
     .book-cover {
@@ -954,35 +950,6 @@
     .drawer.open {
       transform: translateZ(120px) translateY(10px);
     }
-
- /* ================== MINI WHEAT NO MORE EMPTY ================== */
-
-<section id="frosted-mini-wheats">
-    <h2 class="section-title">Frosted Mini Wheats</h2>
-    
-    <div class="brand">
-      <h3>Mini Wheats Ipsum Generator</h3>
-      <div class="ads" style="flex-direction: column; align-items: center;">
-        
-        <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
-          <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
-            Instead of standard Latin filler text, I built a custom script to generate placeholder copy using a word bank designed around the "sweet-meets-wheat" duality of Frosted Mini Wheats. Try it out!
-          </p>
-          
-          <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
-            <label for="ipsum-paragraphs" style="color: var(--accent); font-weight: 600;">Paragraphs:</label>
-            <input type="number" id="ipsum-paragraphs" min="1" max="10" value="3" 
-                   style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--accent); background: rgba(0,0,0,0.5); color: var(--text-main); width: 60px; font-family: 'Inter', sans-serif;">
-            <button onclick="generateMiniWheatsIpsum()" class="resume-btn" style="margin-top: 0; padding: 0.5rem 1.2rem;">Generate</button>
-          </div>
-
-          <div id="ipsum-output" style="background: rgba(0, 0, 0, 0.45); padding: 2rem; border-radius: 12px; font-family: 'Inter', sans-serif; white-space: pre-wrap; text-align: left; min-height: 200px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); color: var(--text-muted); line-height: 1.8;">
-            </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
     
     /* ================== FOLDERS ================== */
 
@@ -1445,6 +1412,7 @@
 
   <nav>
     <a href="#hero">Home</a>
+    <a href="#frosted-mini-wheats">Mini Wheats</a>
     <a href="#print-campaign">Print Campaign</a>
     <a href="#360-campaign">360 Campaign</a>
     <a href="#prod-media-element">Hinge Video</a>
@@ -1476,6 +1444,35 @@
       </div>
     </div>
   </header>
+
+  /* ================== MINI WHEAT NO MORE EMPTY ================== */
+
+  <section id="frosted-mini-wheats">
+    <h2 class="section-title">Frosted Mini Wheats</h2>
+    
+    <div class="brand">
+      <h3>Mini Wheats Ipsum Generator</h3>
+      <div class="ads" style="flex-direction: column; align-items: center;">
+        
+        <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
+          <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+            Instead of standard Latin filler text, I built a custom script to generate placeholder copy using a word bank designed around the "sweet-meets-wheat" duality of Frosted Mini Wheats. Try it out!
+          </p>
+          
+          <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
+            <label for="ipsum-paragraphs" style="color: var(--accent); font-weight: 600;">Paragraphs:</label>
+            <input type="number" id="ipsum-paragraphs" min="1" max="10" value="3" 
+                   style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--accent); background: rgba(0,0,0,0.5); color: var(--text-main); width: 60px; font-family: 'Inter', sans-serif;">
+            <button onclick="generateMiniWheatsIpsum()" class="resume-btn" style="margin-top: 0; padding: 0.5rem 1.2rem;">Generate</button>
+          </div>
+
+          <div id="ipsum-output" style="background: rgba(0, 0, 0, 0.45); padding: 2rem; border-radius: 12px; font-family: 'Inter', sans-serif; white-space: pre-wrap; text-align: left; min-height: 200px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); color: var(--text-muted); line-height: 1.8;">
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <section id="print-campaign">
     <h2 class="section-title">Brand Campaigns</h2>
@@ -2079,6 +2076,57 @@
       );
 
     });
+
+    /* ==========================================================
+       FROSTED MINI WHEATS IPSUM GENERATOR
+    ========================================================== */
+    const wordsRaw = `kitchen pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start of day first meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform repetitive modular stackable geometric cube brick tile grid pattern`;
+
+    const wordList = wordsRaw.split(/\s+/);
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateSentence(minWords = 8, maxWords = 20) {
+      const length = getRandomInt(minWords, maxWords);
+      let sentenceWords = [];
+      for (let i = 0; i < length; i++) {
+        sentenceWords.push(wordList[getRandomInt(0, wordList.length - 1)]);
+      }
+      let sentence = sentenceWords.join(" ");
+      return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
+    }
+
+    function generateParagraph(minSentences = 3, maxSentences = 6) {
+      const numSentences = getRandomInt(minSentences, maxSentences);
+      let sentences = [];
+      for (let i = 0; i < numSentences; i++) {
+        sentences.push(generateSentence());
+      }
+      return sentences.join(" ");
+    }
+
+    function generateMiniWheatsIpsum() {
+      const inputEl = document.getElementById("ipsum-paragraphs");
+      const outputEl = document.getElementById("ipsum-output");
+      
+      let n = parseInt(inputEl.value);
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 20) n = 20; // Keep it from crashing the browser if someone types 9999
+
+      let paragraphs = [];
+      for (let i = 0; i < n; i++) {
+        paragraphs.push(generateParagraph());
+      }
+      
+      outputEl.innerText = paragraphs.join("\n\n");
+    }
+
+    // Auto-generate some text when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      generateMiniWheatsIpsum();
+    });
   </script>
 
 
@@ -2367,59 +2415,6 @@
         }
         updateIcon();
       });
-    });
-  </script>
-
-<script>
-    /* ==========================================================
-       FROSTED MINI WHEATS IPSUM GENERATOR
-    ========================================================== */
-    const wordsRaw = `kitchen pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start of day first meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform repetitive modular stackable geometric cube brick tile grid pattern`;
-
-    const wordList = wordsRaw.split(/\s+/);
-
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function generateSentence(minWords = 8, maxWords = 20) {
-      const length = getRandomInt(minWords, maxWords);
-      let sentenceWords = [];
-      for (let i = 0; i < length; i++) {
-        sentenceWords.push(wordList[getRandomInt(0, wordList.length - 1)]);
-      }
-      let sentence = sentenceWords.join(" ");
-      return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
-    }
-
-    function generateParagraph(minSentences = 3, maxSentences = 6) {
-      const numSentences = getRandomInt(minSentences, maxSentences);
-      let sentences = [];
-      for (let i = 0; i < numSentences; i++) {
-        sentences.push(generateSentence());
-      }
-      return sentences.join(" ");
-    }
-
-    function generateMiniWheatsIpsum() {
-      const inputEl = document.getElementById("ipsum-paragraphs");
-      const outputEl = document.getElementById("ipsum-output");
-      
-      let n = parseInt(inputEl.value);
-      if (isNaN(n) || n < 1) n = 1;
-      if (n > 20) n = 20; // Keep it from crashing the browser if someone types 9999
-
-      let paragraphs = [];
-      for (let i = 0; i < n; i++) {
-        paragraphs.push(generateParagraph());
-      }
-      
-      outputEl.innerText = paragraphs.join("\n\n");
-    }
-
-    // Auto-generate some text when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      generateMiniWheatsIpsum();
     });
   </script>
   
