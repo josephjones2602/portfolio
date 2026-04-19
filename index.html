@@ -187,7 +187,7 @@
     }
 
     /* stack order */
-    #skeleton-img { z-index: 1; opacity: 1; }
+    #skeleton-img { z-index: 1; opacity: 1; transition: filter 2s ease; filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4); }
     /* A black layer beneath Joseph that makes him 'char' */
     .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
     #joseph-img { z-index: 3; opacity: 1; }
@@ -199,8 +199,8 @@
 
     /* Resting State for Joseph - fully visible mask */
     #joseph-img {
-      mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
+      -webkit-mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
       filter: brightness(1) grayscale(0);
       transition:
         transform 0.6s ease,
@@ -210,8 +210,8 @@
     }
 
     .char-black-base {
-      mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
+      -webkit-mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
       transition:
         opacity 0.5s ease,
         mask-image 0.5s ease,
@@ -225,20 +225,25 @@
       opacity: 0; /* Fade out completely */
       /* Char burns away slightly smaller/later than Joseph to leave a black ring */
       mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
+        circle 100px at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 15%,
-        black 35%,
+        transparent 20%,
+        black 45%,
         black 100%
       );
       -webkit-mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
+        circle 100px at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 15%,
-        black 35%,
+        transparent 20%,
+        black 45%,
         black 100%
       );
       transition: opacity 2s ease, mask-image 0s linear, -webkit-mask-image 0s linear;
+    }
+
+
+    body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
+      filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
     }
 
     /* 2. Joseph chars and is dissolved */
@@ -247,17 +252,17 @@
       filter: sepia(0.8) hue-rotate(-20deg) saturate(2) brightness(0.2) grayscale(0.5);
 
       mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
+        circle 100px at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 35%,
-        black 55%,
+        transparent 45%,
+        black 65%,
         black 100%
       );
       -webkit-mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
+        circle 100px at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 35%,
-        black 55%,
+        transparent 45%,
+        black 65%,
         black 100%
       );
       transition:
