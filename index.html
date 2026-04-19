@@ -187,7 +187,7 @@
     }
 
     /* stack order */
-    #skeleton-img { z-index: 1; opacity: 1; transition: filter 2s ease; filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4); }
+    #skeleton-img { z-index: 1; opacity: 1; transition: filter 2s ease; }
     /* A black layer beneath Joseph that makes him 'char' */
     .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
     #joseph-img { z-index: 3; opacity: 1; }
@@ -199,48 +199,30 @@
 
     /* Resting State for Joseph - fully visible mask */
     #joseph-img {
-      mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
+      mask-image: radial-gradient(circle 20px at var(--char-x) var(--char-y), black 0%, black 100%);
+      -webkit-mask-image: radial-gradient(circle 20px at var(--char-x) var(--char-y), black 0%, black 100%);
+      mask-size: 300% 300%; /* Make mask much larger than image */
+      mask-position: center;
       filter: brightness(1) grayscale(0);
       transition:
         transform 0.6s ease,
         filter 0.5s ease,
         mask-image 0.5s ease,
-        -webkit-mask-image 0.5s ease;
+        -webkit-mask-image 0.5s ease,
+        opacity 0.5s ease; /* smooth reset on mouseleave */
     }
 
     .char-black-base {
-      mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
-      transition:
-        opacity 0.5s ease,
-        mask-image 0.5s ease,
-        -webkit-mask-image 0.5s ease;
+      transition: opacity 0.5s ease;
     }
 
     /* Hover State ONLY when Fire Cursor is ON */
     
-    /* 1. Turn the black base opaque */
+    /* 1. Turn the black base opaque under Joseph */
     body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
-      opacity: 0; /* Fade out completely */
-      /* Char burns away slightly smaller/later than Joseph to leave a black ring */
-      mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 20%,
-        black 45%,
-        black 100%
-      );
-      -webkit-mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 20%,
-        black 45%,
-        black 100%
-      );
-      transition: opacity 2s ease, mask-image 0s linear, -webkit-mask-image 0s linear;
+      opacity: 0;
+      transition: opacity 2s ease;
     }
-
 
     body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
       filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
@@ -251,24 +233,27 @@
       opacity: 0; /* Fade out completely */
       filter: sepia(0.8) hue-rotate(-20deg) saturate(2) brightness(0.2) grayscale(0.5);
 
+      /* The mask spreads from mouse coordinates */
       mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
+        circle closest-side at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 45%,
-        black 65%,
+        transparent 10%,
+        black 50%,
         black 100%
       );
       -webkit-mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
+        circle closest-side at var(--char-x) var(--char-y),
         transparent 0%,
-        transparent 45%,
-        black 65%,
+        transparent 10%,
+        black 50%,
         black 100%
       );
+
+      /* Speed up mask movement to match natural charring look */
       transition:
         opacity 2s ease,
         transform 0.6s ease,
-        filter 0.6s ease,
+        filter 2s ease,
         mask-image 0s linear,
         -webkit-mask-image 0s linear;
     }
