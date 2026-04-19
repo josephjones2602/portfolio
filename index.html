@@ -187,10 +187,27 @@
     }
 
     /* stack order */
-    #skeleton-img { z-index: 1; opacity: 1; transition: filter 2s ease; }
+    #skeleton-img { z-index: 1; opacity: 1; transition: filter 0.5s ease; }
     /* A black layer beneath Joseph that makes him 'char' */
-    .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
+    .char-black-base { z-index: 2; border:none; background: #000; opacity: 0; transition: opacity 0.5s ease; }
     #joseph-img { z-index: 3; opacity: 1; }
+
+    .flames-overlay {
+      z-index: 4;
+      pointer-events: none;
+      background: linear-gradient(to top,
+        rgba(255,0,0,0) 0%,
+        rgba(255,0,0,0.5) 20%,
+        rgba(255,68,0,0.8) 40%,
+        rgba(255,153,0,0.9) 50%,
+        rgba(255,255,0,0.8) 60%,
+        rgba(255,0,0,0) 100%);
+      background-size: 100% 300%;
+      background-position: 0 100%;
+      mix-blend-mode: color-dodge;
+      opacity: 0;
+      transition: opacity 0.5s ease, background-position 0.5s ease;
+    }
 
     /* Base Hover (Applies regardless of fire cursor state) */
     .profile-wrapper:hover .profile-pic {
@@ -209,23 +226,30 @@
         filter 0.5s ease,
         mask-image 0.5s ease,
         -webkit-mask-image 0.5s ease,
-        opacity 0.5s ease; /* smooth reset on mouseleave */
+        opacity 2s ease 10s; /* smooth reset with 10s delay to reveal skeleton as normal */
     }
 
     .char-black-base {
-      transition: opacity 0.5s ease;
+      transition: opacity 2s ease 10s; /* wait 10s, then fade out base along with joseph fade in */
     }
 
     /* Hover State ONLY when Fire Cursor is ON */
     
+    body.fire-cursor-enabled .profile-wrapper:hover .flames-overlay {
+      opacity: 1;
+      background-position: 0 -100%;
+      transition: opacity 0.5s ease, background-position 5s ease-in-out;
+    }
+
     /* 1. Turn the black base opaque under Joseph */
     body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
       opacity: 0;
-      transition: opacity 2s ease;
+      transition: opacity 5s ease;
     }
 
     body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
       filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
+      transition: filter 5s ease;
     }
 
     /* 2. Joseph chars and is dissolved */
@@ -251,9 +275,9 @@
 
       /* Speed up mask movement to match natural charring look */
       transition:
-        opacity 2s ease,
+        opacity 5s ease,
         transform 0.6s ease,
-        filter 2s ease,
+        filter 5s ease,
         mask-image 0s linear,
         -webkit-mask-image 0s linear;
     }
@@ -1498,6 +1522,7 @@
           <img src="static/images/Joseph Jones Skeleton Portrait.jpeg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
           <div class="profile-pic char-black-base"></div>
           <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
+          <div class="flames-overlay profile-pic"></div>
         </div>
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
