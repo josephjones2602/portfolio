@@ -188,149 +188,86 @@
 
     /* stack order */
     #skeleton-img { z-index: 1; opacity: 1; }
+    /* A black layer beneath Joseph that makes him 'char' */
+    .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
+    #joseph-img { z-index: 3; opacity: 1; }
 
-    /* The char-black-base represents the burned paper underneath the photo before it completely turns to ash (transparent) */
-    .char-black-base {
-      z-index: 2;
-      border:none;
-      background: #000;
-      opacity: 0;
-      transition: opacity 0.5s ease, mask-image 2.5s ease, -webkit-mask-image 2.5s ease, mask-position 2.5s ease, -webkit-mask-position 2.5s ease;
-      mask-repeat: no-repeat;
-      -webkit-mask-repeat: no-repeat;
+    /* Base Hover (Applies regardless of fire cursor state) */
+    .profile-wrapper:hover .profile-pic {
+      transform: scale(1.08) rotate(1deg);
     }
 
+    /* Resting State for Joseph - fully visible mask */
     #joseph-img {
-      z-index: 3;
-      opacity: 1;
-      transform-origin: center center;
+      mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      -webkit-mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      filter: brightness(1) grayscale(0);
       transition:
-        transform 2.5s ease,
-        filter 2.5s ease,
-        mask-image 2.5s ease,
-        -webkit-mask-image 2.5s ease,
-        mask-position 2.5s ease,
-        -webkit-mask-position 2.5s ease;
-      mask-repeat: no-repeat;
-      -webkit-mask-repeat: no-repeat;
-      filter: sepia(0) hue-rotate(0deg) saturate(1) brightness(1) grayscale(0);
-      /* Default state mask is fully visible */
-      mask-image: linear-gradient(to top, black 0%, black 100%);
-      -webkit-mask-image: linear-gradient(to top, black 0%, black 100%);
-      mask-size: 100% 100%;
-      -webkit-mask-size: 100% 100%;
-      mask-position: 0% 0%;
-      -webkit-mask-position: 0% 0%;
+        transform 0.6s ease,
+        filter 0.5s ease,
+        mask-image 0.5s ease,
+        -webkit-mask-image 0.5s ease;
     }
 
-    .profile-wrapper {
-      perspective: 1000px;
-      transform-style: preserve-3d;
+    .char-black-base {
+      mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      -webkit-mask-image: radial-gradient(circle closest-side at var(--char-x) var(--char-y), black 0%, black 100%);
+      transition:
+        opacity 0.5s ease,
+        mask-image 0.5s ease,
+        -webkit-mask-image 0.5s ease;
     }
 
-        /* --- Directional Settings for Initial Hover Enter --- */
-
-    /* Bottom */
-    .profile-wrapper.dir-bottom #joseph-img, .profile-wrapper.dir-bottom .char-black-base {
-      mask-size: 100% 800%; -webkit-mask-size: 100% 800%;
-      mask-position: 0% 0%; -webkit-mask-position: 0% 0%;
-    }
-    .profile-wrapper.dir-bottom #joseph-img {
-      transform-origin: top center;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to bottom, black 0%, black 37.5%, transparent 62.5%, transparent 100%);
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to bottom, black 0%, black 37.5%, transparent 62.5%, transparent 100%);
-      -webkit-mask-composite: source-out;
-    }
-    .profile-wrapper.dir-bottom .char-black-base {
-      mask-image: linear-gradient(to bottom, black 0%, black 62.5%, transparent 87.5%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 62.5%, transparent 87.5%, transparent 100%);
-    }
-
-    /* Top */
-    .profile-wrapper.dir-top #joseph-img, .profile-wrapper.dir-top .char-black-base {
-      mask-size: 100% 800%; -webkit-mask-size: 100% 800%;
-      mask-position: 0% 100%; -webkit-mask-position: 0% 100%;
-    }
-    .profile-wrapper.dir-top #joseph-img {
-      transform-origin: bottom center;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to bottom, transparent 0%, transparent 37.5%, black 62.5%, black 100%);
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to bottom, transparent 0%, transparent 37.5%, black 62.5%, black 100%);
-      -webkit-mask-composite: source-out;
-    }
-    .profile-wrapper.dir-top .char-black-base {
-      mask-image: linear-gradient(to bottom, transparent 0%, transparent 12.5%, black 37.5%, black 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 12.5%, black 37.5%, black 100%);
-    }
-
-    /* Left */
-    .profile-wrapper.dir-left #joseph-img, .profile-wrapper.dir-left .char-black-base {
-      mask-size: 800% 100%; -webkit-mask-size: 800% 100%;
-      mask-position: 100% 0%; -webkit-mask-position: 100% 0%;
-    }
-    .profile-wrapper.dir-left #joseph-img {
-      transform-origin: center right;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to right, transparent 0%, transparent 37.5%, black 62.5%, black 100%);
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to right, transparent 0%, transparent 37.5%, black 62.5%, black 100%);
-      -webkit-mask-composite: source-out;
-    }
-    .profile-wrapper.dir-left .char-black-base {
-      mask-image: linear-gradient(to right, transparent 0%, transparent 12.5%, black 37.5%, black 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 12.5%, black 37.5%, black 100%);
-    }
-
-    /* Right */
-    .profile-wrapper.dir-right #joseph-img, .profile-wrapper.dir-right .char-black-base {
-      mask-size: 800% 100%; -webkit-mask-size: 800% 100%;
-      mask-position: 0% 0%; -webkit-mask-position: 0% 0%;
-    }
-    .profile-wrapper.dir-right #joseph-img {
-      transform-origin: center left;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to right, black 0%, black 37.5%, transparent 62.5%, transparent 100%);
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"), linear-gradient(to right, black 0%, black 37.5%, transparent 62.5%, transparent 100%);
-      -webkit-mask-composite: source-out;
-    }
-    .profile-wrapper.dir-right .char-black-base {
-      mask-image: linear-gradient(to right, black 0%, black 62.5%, transparent 87.5%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, black 0%, black 62.5%, transparent 87.5%, transparent 100%);
-    }
-
-        /* --- Hover State (Fire Cursor On) --- */
+    /* Hover State ONLY when Fire Cursor is ON */
     
-    /* Make black base visible */
+    /* 1. Turn the black base opaque */
     body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
-      opacity: 1;
+      opacity: 0; /* Fade out completely */
+      /* Char burns away slightly smaller/later than Joseph to leave a black ring */
+      mask-image: radial-gradient(
+        circle closest-side at var(--char-x) var(--char-y),
+        transparent 0%,
+        transparent 15%,
+        black 35%,
+        black 100%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle closest-side at var(--char-x) var(--char-y),
+        transparent 0%,
+        transparent 15%,
+        black 35%,
+        black 100%
+      );
+      transition: opacity 2s ease, mask-image 0s linear, -webkit-mask-image 0s linear;
     }
 
-    /* Change Joseph to charred appearance */
+    /* 2. Joseph chars and is dissolved */
     body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
+      opacity: 0; /* Fade out completely */
       filter: sepia(0.8) hue-rotate(-20deg) saturate(2) brightness(0.2) grayscale(0.5);
-    }
 
-    /* Animate mask positions and apply 3D transform */
-    body.fire-cursor-enabled .profile-wrapper.dir-bottom:hover #joseph-img,
-    body.fire-cursor-enabled .profile-wrapper.dir-bottom:hover .char-black-base {
-      mask-position: 0% 100%; -webkit-mask-position: 0% 100%;
-      transform: rotateX(-50deg) translateY(-20px);
-    }
-
-    body.fire-cursor-enabled .profile-wrapper.dir-top:hover #joseph-img,
-    body.fire-cursor-enabled .profile-wrapper.dir-top:hover .char-black-base {
-      mask-position: 0% 0%; -webkit-mask-position: 0% 0%;
-      transform: rotateX(50deg) translateY(20px);
-    }
-
-    body.fire-cursor-enabled .profile-wrapper.dir-left:hover #joseph-img,
-    body.fire-cursor-enabled .profile-wrapper.dir-left:hover .char-black-base {
-      mask-position: 0% 0%; -webkit-mask-position: 0% 0%;
-      transform: rotateY(-50deg) translateX(20px);
+      mask-image: radial-gradient(
+        circle closest-side at var(--char-x) var(--char-y),
+        transparent 0%,
+        transparent 35%,
+        black 55%,
+        black 100%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle closest-side at var(--char-x) var(--char-y),
+        transparent 0%,
+        transparent 35%,
+        black 55%,
+        black 100%
+      );
+      transition:
+        opacity 2s ease,
+        transform 0.6s ease,
+        filter 0.6s ease,
+        mask-image 0s linear,
+        -webkit-mask-image 0s linear;
     }
     
-    body.fire-cursor-enabled .profile-wrapper.dir-right:hover #joseph-img,
-    body.fire-cursor-enabled .profile-wrapper.dir-right:hover .char-black-base {
-      mask-position: 100% 0%; -webkit-mask-position: 100% 0%;
-      transform: rotateY(50deg) translateX(-20px);
-    }
-
     /* ----------------------- */
 
     .bio-text {
@@ -1348,9 +1285,13 @@
       }
 
       /* Disable dynamic JS masking on mobile performance reasons and lack of cursor */
+      .profile-wrapper {
+        --char-x: 50% !important;
+        --char-y: 50% !important;
+      }
+
       #joseph-img {
         mask-image: none !important; /* disable masking */
-        transform: none !important;
       }
 
       /* Allow simple swap on mobile tap (No char effect since fire is desktop only) */
@@ -2574,31 +2515,28 @@
       const container = document.getElementById('profilePicContainer');
       if (!container) return;
 
-      container.addEventListener('mouseenter', function (e) {
+      container.addEventListener('mousemove', function (e) {
+        // Optimization: Only run calculations if fire cursor is actually on
         if (!window.isFireCursorActive) return;
 
         const rect = container.getBoundingClientRect();
         
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
+        // Calculate mouse position relative to the container as percentages
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-
-        container.classList.remove('dir-top', 'dir-bottom', 'dir-left', 'dir-right');
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) container.classList.add('dir-right');
-            else container.classList.add('dir-left');
-        } else {
-            if (dy > 0) container.classList.add('dir-bottom');
-            else container.classList.add('dir-top');
-        }
+        // Update CSS variables defined on the container
+        container.style.setProperty('--char-x', x + '%');
+        container.style.setProperty('--char-y', y + '%');
       });
       
+      // Optional: Reset mask to center on mouseleave
       container.addEventListener('mouseleave', function() {
+        // Add a slight delay to allow the CSS transition to play nicely
         setTimeout(() => {
             if (!container.matches(':hover')) {
-                container.classList.remove('dir-top', 'dir-bottom', 'dir-left', 'dir-right');
+                container.style.setProperty('--char-x', '50%');
+                container.style.setProperty('--char-y', '50%');
             }
         }, 100);
       });
