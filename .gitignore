@@ -1,2 +1,4 @@
-verification/node_modules/
+node_modules/
+server.log
+test_skel_char.py
 playwright_tests/
