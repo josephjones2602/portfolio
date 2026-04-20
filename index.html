@@ -188,100 +188,9 @@
       left: 0;
     }
 
-    /* stack order */
-    #skeleton-img { z-index: 1; opacity: 1; transition: filter 0.5s ease; }
-    /* A black layer beneath Joseph that makes him 'char' */
-    .char-black-base { z-index: 2; border:none; background: #000; opacity: 0; transition: opacity 0.5s ease; }
-    #joseph-img { z-index: 3; opacity: 1; }
-
-    .flames-overlay {
-      z-index: 4;
-      pointer-events: none;
-      background: linear-gradient(to top,
-        rgba(255,0,0,0) 0%,
-        rgba(255,0,0,0.5) 20%,
-        rgba(255,68,0,0.8) 40%,
-        rgba(255,153,0,0.9) 50%,
-        rgba(255,255,0,0.8) 60%,
-        rgba(255,0,0,0) 100%);
-      background-size: 100% 300%;
-      background-position: 0 100%;
-      mix-blend-mode: color-dodge;
-      opacity: 0;
-      transition: opacity 0.5s ease, background-position 0.5s ease;
-    }
-
     /* Base Hover (Applies regardless of fire cursor state) */
     .profile-wrapper:hover .profile-pic {
       transform: scale(1.08) rotate(1deg);
-    }
-
-    /* Resting State for Joseph - fully visible mask */
-    #joseph-img {
-      mask-image: radial-gradient(circle 20px at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle 20px at var(--char-x) var(--char-y), black 0%, black 100%);
-      mask-size: 300% 300%; /* Make mask much larger than image */
-      mask-position: center;
-      filter: brightness(1) grayscale(0);
-      transition:
-        transform 0.6s ease,
-        filter 0.5s ease,
-        mask-image 0.5s ease,
-        -webkit-mask-image 0.5s ease,
-        opacity 2s ease 10s; /* smooth reset with 10s delay to reveal skeleton as normal */
-    }
-
-    .char-black-base {
-      transition: opacity 2s ease 10s; /* wait 10s, then fade out base along with joseph fade in */
-    }
-
-    /* Hover State ONLY when Fire Cursor is ON */
-    
-    body.fire-cursor-enabled .profile-wrapper:hover .flames-overlay {
-      opacity: 1;
-      background-position: 0 -100%;
-      transition: opacity 0.5s ease, background-position 5s ease-in-out;
-    }
-
-    /* 1. Turn the black base opaque under Joseph */
-    body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
-      opacity: 0;
-      transition: opacity 5s ease;
-    }
-
-    body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
-      filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
-      transition: filter 5s ease;
-    }
-
-    /* 2. Joseph chars and is dissolved */
-    body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
-      opacity: 0; /* Fade out completely */
-      filter: sepia(0.8) hue-rotate(-20deg) saturate(2) brightness(0.2) grayscale(0.5);
-
-      /* The mask spreads from mouse coordinates */
-      mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 10%,
-        black 50%,
-        black 100%
-      );
-      -webkit-mask-image: radial-gradient(
-        circle closest-side at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 10%,
-        black 50%,
-        black 100%
-      );
-
-      /* Speed up mask movement to match natural charring look */
-      transition:
-        opacity 5s ease,
-        transform 0.6s ease,
-        filter 5s ease,
-        mask-image 0s linear,
-        -webkit-mask-image 0s linear;
     }
     
     /* ----------------------- */
@@ -1522,9 +1431,9 @@
       <div class="hero-identity">
         <div class="profile-wrapper" id="profilePicContainer">
           <img src="static/images/Joseph Jones Skeleton Portrait.jpeg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
-          <div class="profile-pic char-black-base"></div>
-          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
-          <div class="flames-overlay profile-pic"></div>
+          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic" style="z-index: 2; opacity: 0;">
+          <canvas id="maskCanvas" class="profile-pic" style="z-index: 3; pointer-events: none; display: block;"></canvas>
+          <div class="flames-overlay profile-pic" style="z-index: 4;"></div>
         </div>
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
@@ -2527,36 +2436,193 @@
   
   <script>
     /* ==========================================================
-       PROFILE PIC Mouse Tracking for Char Effect
+       Mask + Burn Propagation for Joseph's Portrait
        ========================================================== */
     document.addEventListener('DOMContentLoaded', function () {
-      const container = document.getElementById('profilePicContainer');
-      if (!container) return;
+      const imgTop = document.getElementById('joseph-img');
+      const maskCanvas = document.getElementById('maskCanvas');
+      if (!imgTop || !maskCanvas) return;
+      const mCtx = maskCanvas.getContext('2d', { willReadFrequently: true });
 
-      container.addEventListener('mousemove', function (e) {
-        // Optimization: Only run calculations if fire cursor is actually on
+      let burns = [];
+      let isHovering = false;
+      let isResetting = false;
+      let burnAnimationId = null;
+      let resetTimeoutId = null;
+
+      function initMask(){
+        maskCanvas.width = imgTop.clientWidth;
+        maskCanvas.height = imgTop.clientHeight;
+
+        // Draw pristine image on canvas initially
+        mCtx.globalCompositeOperation = 'source-over';
+        mCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+        mCtx.drawImage(imgTop, 0, 0, maskCanvas.width, maskCanvas.height);
+      }
+
+      // We must wait until the image is loaded to get accurate dimensions
+      if (imgTop.complete) {
+        initMask();
+      } else {
+        imgTop.onload = initMask;
+      }
+      window.addEventListener('resize', initMask);
+
+      /* grow/shrink burns outward/inward */
+      function updateBurns(){
+        // Stop animation loop if nothing is happening
+        if (!isHovering && burns.length === 0 && !isResetting) {
+          burnAnimationId = null;
+          return;
+        }
+
+        // Draw the pristine portrait first
+        mCtx.globalCompositeOperation = 'source-over';
+        mCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+        mCtx.drawImage(imgTop, 0, 0, maskCanvas.width, maskCanvas.height);
+
+        burns.forEach(b => {
+          if (isResetting) {
+            b.radius -= 6; // Shrink rapidly during reset
+          } else {
+            b.radius += 2.5; // Grow burn hole while active
+          }
+
+          if (b.radius <= 0) return; // skip if shrunk completely
+
+          /* =========================
+             1. ERASE (burn hole)
+          ========================= */
+          mCtx.globalCompositeOperation = 'destination-out';
+
+          const eraseGrad = mCtx.createRadialGradient(
+            b.x, b.y, b.radius * 0.6,
+            b.x, b.y, b.radius
+          );
+          eraseGrad.addColorStop(0,'rgba(0,0,0,1)');
+          eraseGrad.addColorStop(1,'rgba(0,0,0,0)');
+
+          mCtx.fillStyle = eraseGrad;
+          mCtx.beginPath();
+          mCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+          mCtx.fill();
+
+          /* =========================
+             2. BURN EDGE (NEW 🔥)
+          ========================= */
+          mCtx.globalCompositeOperation = 'source-over';
+
+          const edgeWidth = 18;
+          const flicker = Math.random() * 4;
+
+          const burnGrad = mCtx.createRadialGradient(
+            b.x, b.y, Math.max(0, b.radius - edgeWidth),
+            b.x, b.y, b.radius + flicker
+          );
+
+          burnGrad.addColorStop(0, 'rgba(255,140,40,0.25)');  // inner glow
+          burnGrad.addColorStop(0.4, 'rgba(255,80,0,0.35)');  // hot edge
+          burnGrad.addColorStop(0.7, 'rgba(40,20,0,0.6)');    // char
+          burnGrad.addColorStop(1, 'rgba(0,0,0,0)');
+
+          mCtx.fillStyle = burnGrad;
+          mCtx.beginPath();
+          mCtx.arc(b.x, b.y, b.radius + flicker, 0, Math.PI * 2);
+          mCtx.fill();
+
+          /* =========================
+             3. TEXTURED EDGE (noise specks)
+          ========================= */
+          for (let i = 0; i < 25; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const r = b.radius + (Math.random() * 10 - 5);
+
+            const ex = b.x + Math.cos(angle) * r;
+            const ey = b.y + Math.sin(angle) * r;
+
+            if (
+              ex >= 0 &&
+              ey >= 0 &&
+              ex <= maskCanvas.width &&
+              ey <= maskCanvas.height
+            ) {
+              const size = Math.random() * 2;
+
+              mCtx.fillStyle = Math.random() > 0.5
+                ? 'rgba(255,120,0,0.4)'
+                : 'rgba(30,15,0,0.5)';
+
+              mCtx.beginPath();
+              mCtx.arc(ex, ey, size, 0, Math.PI * 2);
+              mCtx.fill();
+            }
+          }
+        });
+
+        // Filter out burns that are completely gone (shrunk) or fully covering the image (grown too large)
+        if (isResetting) {
+            burns = burns.filter(b => b.radius > 0);
+            if (burns.length === 0) {
+                isResetting = false; // Reset complete
+            }
+        } else {
+            burns = burns.filter(b => b.radius < b.max);
+        }
+        
+        burnAnimationId = requestAnimationFrame(updateBurns);
+      }
+
+      /* start burn */
+      imgTop.addEventListener('mouseenter', e=>{
         if (!window.isFireCursorActive) return;
 
-        const rect = container.getBoundingClientRect();
-        
-        // Calculate mouse position relative to the container as percentages
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        // Clear any pending resets
+        if (resetTimeoutId) {
+            clearTimeout(resetTimeoutId);
+            resetTimeoutId = null;
+        }
+        isResetting = false;
 
-        // Update CSS variables defined on the container
-        container.style.setProperty('--char-x', x + '%');
-        container.style.setProperty('--char-y', y + '%');
+        const rect = imgTop.getBoundingClientRect();
+        burns.push({
+          x:e.clientX - rect.left,
+          y:e.clientY - rect.top,
+          radius:10,
+          max:600
+        });
+
+        isHovering = true;
+        if (!burnAnimationId) {
+            burnAnimationId = requestAnimationFrame(updateBurns);
+        }
       });
       
-      // Optional: Reset mask to center on mouseleave
-      container.addEventListener('mouseleave', function() {
-        // Add a slight delay to allow the CSS transition to play nicely
-        setTimeout(() => {
-            if (!container.matches(':hover')) {
-                container.style.setProperty('--char-x', '50%');
-                container.style.setProperty('--char-y', '50%');
-            }
-        }, 100);
+      // Additional continuous burn points while moving mouse over the image
+      imgTop.addEventListener('mousemove', e => {
+        if (!window.isFireCursorActive || !isHovering || isResetting) return;
+
+        // Randomly spawn new burn points to make the burn follow the mouse
+        if (Math.random() > 0.85) { // 15% chance per mousemove event
+            const rect = imgTop.getBoundingClientRect();
+            burns.push({
+              x:e.clientX - rect.left,
+              y:e.clientY - rect.top,
+              radius:10,
+              max:600
+            });
+        }
+      });
+
+      imgTop.addEventListener('mouseleave', () => {
+         isHovering = false;
+
+         // Set 10-second delay to gradually reset the mask
+         resetTimeoutId = setTimeout(() => {
+             isResetting = true;
+             if (!burnAnimationId) {
+                burnAnimationId = requestAnimationFrame(updateBurns);
+             }
+         }, 10000);
       });
     });
   </script>
