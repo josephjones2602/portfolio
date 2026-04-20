@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joseph Jones | Copywriter Portfolio</title>
+  <link rel="icon" type="image/png" href="static/icons/hydrant.png">
 
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
@@ -189,7 +190,6 @@
     /* stack order */
     #skeleton-img { z-index: 1; opacity: 1; transition: filter 2s ease; }
     /* A black layer beneath Joseph that makes him 'char' */
-    .char-black-base { z-index: 2; border:none; background: #000; transition: opacity 0.5s ease; }
     #joseph-img { z-index: 3; opacity: 1; }
 
     /* Base Hover (Applies regardless of fire cursor state) */
@@ -210,39 +210,9 @@
         -webkit-mask-image 0.5s ease;
     }
 
-    .char-black-base {
-      mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
-      -webkit-mask-image: radial-gradient(circle 100px at var(--char-x) var(--char-y), black 0%, black 100%);
-      transition:
-        opacity 0.5s ease,
-        mask-image 0.5s ease,
-        -webkit-mask-image 0.5s ease;
-    }
-
     /* Hover State ONLY when Fire Cursor is ON */
 
     /* 1. Turn the black base opaque */
-    body.fire-cursor-enabled .profile-wrapper:hover .char-black-base {
-      opacity: 0; /* Fade out completely */
-      /* Char burns away slightly smaller/later than Joseph to leave a black ring */
-      mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 20%,
-        black 45%,
-        black 100%
-      );
-      -webkit-mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 20%,
-        black 45%,
-        black 100%
-      );
-      transition: opacity 2s ease, mask-image 0s linear, -webkit-mask-image 0s linear;
-    }
-
-
     body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
       filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
     }
@@ -1512,8 +1482,10 @@
       <div class="hero-identity">
         <div class="profile-wrapper" id="profilePicContainer">
           <img src="static/images/Joseph Jones Skeleton Portrait.jpeg" alt="Joseph Jones" id="skeleton-img" class="profile-pic">
-          <div class="profile-pic char-black-base"></div>
-          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic">
+          <!-- We draw Joseph and the burn effect on this canvas. -->
+          <canvas id="burnCanvas" class="profile-pic" style="z-index: 3; pointer-events: auto;"></canvas>
+          <!-- Hidden original image to use as source for canvas -->
+          <img src="static/images/Joseph Jones Portrait.jpg" alt="Joseph Jones" id="joseph-img" class="profile-pic" style="display:none;">
         </div>
         <h1 class="hero-name">Joseph Jones</h1>
       </div>
@@ -1522,8 +1494,7 @@
           I like to set people on fire. That's why I choose
           advertising; setting other people on fire also sets me on fire.
           <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. <br><br>
-          I’m always looking for ways to improve or collaborate. Contact me at my email and I’ll get back
-          to you in the flare of a match.
+          I’m always looking for ways to improve or collaborate, so reach out!
         </p>
         <a href="#contact" class="resume-btn" target="_blank">Contact Me</a>
       </div>
@@ -1539,7 +1510,7 @@
         
         <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
           <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
-            Somtimes we have nothing to say. But that's okay, because mini-wheats can fill that space for you. 
+            Oops, that mockup looks a little empty. Quick, it's the boss! Fill it with some Mini-Wheats!
           </p>
           
           <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
@@ -2099,7 +2070,7 @@
     const FLOATER_IMAGE_COUNT = 10; // Controls how many images appear
     const FLOATER_IMAGE_SIZE = '200px'; // Controls the size of the images
 
-    const wordsRaw = `kitchen Kellog's no-more-empty-ever pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start-of-day first-meal beginning kickoff launch habit cycle rhythm structure hunger emptiness fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted sprinkled crystallized glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor cinnamon strawberry blueberry chocolate honey maple vanilla caramel sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform Heaven-sent I'm-gonna-burst repetitive modular stackable geometric cube brick tile grid pattern`;
+    const wordsRaw = `kitchen Kellog's no-more-empty-ever hay-bales pantry cupboard shelf box packaging grocery aisle supermarket home table counter family household breakfast table dining morning light quiet morning busy morning morning breakfast time early sunrise routine schedule daily consistency repetition ritual start-of-day first-meal beginning kickoff launch habit cycle rhythm structure hunger fullness energy fatigue morning grogginess wake-up start reset recharge fuel productivity focus clarity strength endurance stamina alertness readiness preparation momentum drive motivation comfort routine habit morning ritual reliability dependability trust familiarity nostalgia childhood adulthood maturity responsibility balance compromise duality discipline control restraint reward indulgence satisfaction completeness fullness calm grounded stable steady predictable reassuring safe practical sensible fiber whole grain digestion gut health fullness satiety sustained energy slow-release complex carbs nutrition wholesome hearty balanced fuel stamina metabolism regularity clean eating simple ingredients natural plant-based grain-based wheat-based healthy choice better-for-you functional food breakfast fuel energizing sustaining filling appetite control hunger satisfied complete nourishment frosted sugar glaze coating sweet sugary icing drizzle dusted glazed-top dual-sided contrast sweet-meets-wheat indulgence treat dessert-like subtle sweetness balance flavor sugary crunch sweetness burst milk bowl spoon breakfast bite chew crunch soak soften absorb soggy crispness snap crackle dissolve melt hydration dunk float sink layer coat drip pour splash stir swirl gulp munch nibble chomp bite-sized mouthfeel texture satisfaction fullness heaviness density chewiness softness contrast crunch-to-soft transition wheat whole grain biscuit square block shredded layered woven compressed stacked compact dense hearty grainy fibrous bran cereal flakes clusters nuggets pillows chunks squares minis bite-sized rustic natural earthy golden tan brown textured rough ridged flaky crisp crunchy dry absorbent porous sponge-like rigid sturdy thick solid blocky uniform Heaven-sent I'm-gonna-burst repetitive modular stackable geometric cube brick tile grid pattern`;
 
     const wordList = wordsRaw.split(/\s+/);
 
@@ -2514,42 +2485,223 @@
     });
   </script>
   
+
+
+
   <script>
     /* ==========================================================
-       PROFILE PIC Mouse Tracking for Char Effect
+       Canvas Burn Effect for Joseph's Portrait
        ========================================================== */
     document.addEventListener('DOMContentLoaded', function () {
+      const canvas = document.getElementById('burnCanvas');
       const container = document.getElementById('profilePicContainer');
-      if (!container) return;
+      const img = document.getElementById('joseph-img');
+      if (!canvas || !img || !container) return;
 
-      container.addEventListener('mousemove', function (e) {
-        // Optimization: Only run calculations if fire cursor is actually on
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      let animationId = null;
+      let isHovering = false;
+      let burnState = { active: false, radius: 0, x: 0, y: 0, startTime: 0 };
+
+      // Constants
+      const BURN_DURATION = 5000; // 5 seconds to cover image
+
+      function resizeCanvas() {
+        // Match actual rendered size of the skeleton/container to draw at 1:1
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        if (!burnState.active) {
+            drawPristine();
+        } else {
+            drawBurn();
+        }
+      }
+
+      if (img.complete) resizeCanvas();
+      else img.onload = resizeCanvas;
+
+      window.addEventListener('resize', resizeCanvas);
+
+      function drawPristine() {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+
+      function drawBurn() {
+        // 1. Draw Pristine Image
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        if (burnState.radius <= 0) return;
+
+        // 2. Erase the center to reveal skeleton
+        ctx.globalCompositeOperation = 'destination-out';
+
+        // Let's create an expanding hole
+        // The hole itself is transparent
+        const maxRad = Math.max(canvas.width, canvas.height) * 1.5; // enough to cover
+        const currentRad = burnState.radius;
+
+        ctx.beginPath();
+        ctx.arc(burnState.x, burnState.y, currentRad, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 3. Draw the burn edge with red/yellow colors
+        ctx.globalCompositeOperation = 'source-over';
+
+        // Only draw burn ring if actively hovering and spreading
+        if (isHovering && currentRad < maxRad) {
+            const edgeWidth = 40; // width of the burn ring
+            const flicker = Math.random() * 10;
+
+            const grad = ctx.createRadialGradient(
+                burnState.x, burnState.y, Math.max(0, currentRad - edgeWidth),
+                burnState.x, burnState.y, currentRad + flicker
+            );
+
+            // Outer ring: red
+            // Middle: red-yellow (orange)
+            grad.addColorStop(0, 'rgba(0, 0, 0, 0)');           // inner part of ring is clear
+            grad.addColorStop(0.3, 'rgba(0, 0, 0, 0.8)');       // black char near edge
+            grad.addColorStop(0.6, 'rgba(255, 0, 0, 0.8)');     // red
+            grad.addColorStop(0.8, 'rgba(255, 100, 0, 0.9)');   // red-yellow
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');           // fade out to nothing
+
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(burnState.x, burnState.y, currentRad + flicker, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw random specks jumping ahead
+            for (let i = 0; i < 30; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                // Specks jump ahead randomly
+                const jump = Math.random() * 30;
+                const r = currentRad + jump;
+                const ex = burnState.x + Math.cos(angle) * r;
+                const ey = burnState.y + Math.sin(angle) * r;
+
+                if (ex >= 0 && ey >= 0 && ex <= canvas.width && ey <= canvas.height) {
+                    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,0,0.8)' : 'rgba(255,150,0,0.9)';
+                    ctx.beginPath();
+                    ctx.arc(ex, ey, Math.random() * 3 + 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+      }
+
+      function animate(time) {
+        if (!burnState.active) return;
+
+        if (isHovering) {
+            // Calculate radius based on time
+            const elapsed = time - burnState.startTime;
+            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+
+            // Linear expansion over 5 seconds
+            burnState.radius = (elapsed / BURN_DURATION) * maxRad;
+            if (burnState.radius > maxRad) burnState.radius = maxRad;
+        }
+
+        drawBurn();
+        animationId = requestAnimationFrame(animate);
+      }
+
+      canvas.addEventListener('mouseenter', (e) => {
         if (!window.isFireCursorActive) return;
 
-        const rect = container.getBoundingClientRect();
-        
-        // Calculate mouse position relative to the container as percentages
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        if (resetTimeoutId) {
+            clearTimeout(resetTimeoutId);
+            resetTimeoutId = null;
+        }
 
-        // Update CSS variables defined on the container
-        container.style.setProperty('--char-x', x + '%');
-        container.style.setProperty('--char-y', y + '%');
+        // Cancel any running animations to prevent race conditions (like restoreAnim fighting animate)
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+
+        const rect = canvas.getBoundingClientRect();
+
+        // Start burn from mouse pos
+        if (!burnState.active) {
+            burnState = {
+                active: true,
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                radius: 0,
+                startTime: performance.now()
+            };
+            isHovering = true;
+            animationId = requestAnimationFrame(animate);
+        } else {
+            // If already burning but was paused/resetting, just resume growing
+            // We need to adjust startTime so it resumes from current radius smoothly
+            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+            const elapsedEquivalent = (burnState.radius / maxRad) * BURN_DURATION;
+            burnState.startTime = performance.now() - elapsedEquivalent;
+            isHovering = true;
+            animationId = requestAnimationFrame(animate);
+        }
       });
       
-      // Optional: Reset mask to center on mouseleave
-      container.addEventListener('mouseleave', function() {
-        // Add a slight delay to allow the CSS transition to play nicely
-        setTimeout(() => {
-            if (!container.matches(':hover')) {
-                container.style.setProperty('--char-x', '50%');
-                container.style.setProperty('--char-y', '50%');
-            }
-        }, 100);
+      canvas.addEventListener('mousemove', (e) => {
+         // Keep center tracking mouse? Requirement says "spread over the entire image from mouse hover".
+         // Usually that implies it starts from where you hovered and spreads. Let's keep the center static to where they entered, or update it?
+         // Let's keep it static to the entry point so it's a solid radial burn from one point.
       });
+
+      let resetTimeoutId = null;
+      const RESTORE_DURATION = 1000; // 1 sec to fade back
+      let restoreStartTime = null;
+
+      canvas.addEventListener('mouseleave', () => {
+        isHovering = false;
+
+        // When user isn't hovering, remove burn color and show skeleton for 10s
+        // (burn ring is already disabled in drawBurn if !isHovering)
+
+        if (resetTimeoutId) clearTimeout(resetTimeoutId);
+
+        resetTimeoutId = setTimeout(() => {
+            // After 10s, gradually change back to Joseph image
+            restoreStartTime = performance.now();
+
+            // We'll fade the hole out
+            let startRad = burnState.radius;
+            const restoreAnim = (t) => {
+                const elapsed = t - restoreStartTime;
+
+                // Gradually restore by shrinking the radius
+                let progress = elapsed / RESTORE_DURATION;
+                if (progress > 1) progress = 1;
+
+                burnState.radius = startRad * (1 - progress);
+
+                if (burnState.radius <= 0) {
+                    burnState.active = false;
+                    burnState.radius = 0;
+                    drawPristine();
+                    if (animationId) cancelAnimationFrame(animationId);
+                    return;
+                }
+
+                drawBurn();
+                animationId = requestAnimationFrame(restoreAnim);
+            };
+
+            if (animationId) cancelAnimationFrame(animationId);
+            animationId = requestAnimationFrame(restoreAnim);
+
+        }, 10000);
+      });
+
     });
   </script>
-
 </body>
+
 
 </html>
