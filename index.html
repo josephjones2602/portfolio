@@ -209,41 +209,6 @@
         mask-image 0.5s ease,
         -webkit-mask-image 0.5s ease;
     }
-
-    /* Hover State ONLY when Fire Cursor is ON */
-
-    /* 1. Turn the black base opaque */
-    body.fire-cursor-enabled .profile-wrapper:hover #skeleton-img {
-      filter: sepia(0.6) hue-rotate(-15deg) saturate(1.5) brightness(0.4) grayscale(0.4);
-    }
-
-    /* 2. Joseph chars and is dissolved */
-    body.fire-cursor-enabled .profile-wrapper:hover #joseph-img {
-      opacity: 0; /* Fade out completely */
-      filter: sepia(0.8) hue-rotate(-20deg) saturate(2) brightness(0.2) grayscale(0.5);
-
-      mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 45%,
-        black 65%,
-        black 100%
-      );
-      -webkit-mask-image: radial-gradient(
-        circle 100px at var(--char-x) var(--char-y),
-        transparent 0%,
-        transparent 45%,
-        black 65%,
-        black 100%
-      );
-      transition:
-        opacity 2s ease,
-        transform 0.6s ease,
-        filter 0.6s ease,
-        mask-image 0s linear,
-        -webkit-mask-image 0s linear;
-    }
-    
     /* ----------------------- */
 
     .bio-text {
@@ -2501,16 +2466,36 @@
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       let animationId = null;
       let isHovering = false;
-      let burnState = { active: false, radius: 0, x: 0, y: 0, startTime: 0 };
+      let burns = [];
 
       // Constants
       const BURN_DURATION = 5000; // 5 seconds to cover image
+
+      function drawImageCover(ctx, img, x, y, w, h) {
+        if (!img.complete || img.naturalWidth === 0) return;
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const canvasRatio = w / h;
+        let drawW, drawH, drawX, drawY;
+
+        if (imgRatio < canvasRatio) {
+            drawW = w;
+            drawH = w / imgRatio;
+            drawX = 0;
+            drawY = (h - drawH) / 2;
+        } else {
+            drawH = h;
+            drawW = h * imgRatio;
+            drawY = 0;
+            drawX = (w - drawW) / 2;
+        }
+        ctx.drawImage(img, drawX + x, drawY + y, drawW, drawH);
+      }
 
       function resizeCanvas() {
         // Match actual rendered size of the skeleton/container to draw at 1:1
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
-        if (!burnState.active) {
+        if (burns.length === 0) {
             drawPristine();
         } else {
             drawBurn();
@@ -2525,63 +2510,83 @@
       function drawPristine() {
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        drawImageCover(ctx, img, 0, 0, canvas.width, canvas.height);
       }
 
       function drawBurn() {
         // 1. Draw Pristine Image
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        if (burnState.radius <= 0) return;
+        drawImageCover(ctx, img, 0, 0, canvas.width, canvas.height);
 
-        // 2. Erase the center to reveal skeleton
+        if (burns.length === 0) return;
+
+        const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+
+        // 2. Erase the centers to reveal skeleton
         ctx.globalCompositeOperation = 'destination-out';
 
-        // Let's create an expanding hole
-        // The hole itself is transparent
-        const maxRad = Math.max(canvas.width, canvas.height) * 1.5; // enough to cover
-        const currentRad = burnState.radius;
+        burns.forEach(b => {
+            if (b.radius <= 0) return;
+            ctx.beginPath();
+            for (let i = 0; i <= 16; i++) {
+                const angle = (i % 16) * (Math.PI * 2) / 16;
+                const r = b.radius * b.speeds[i % 16];
+                const px = b.x + Math.cos(angle) * r;
+                const py = b.y + Math.sin(angle) * r;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.fill();
+        });
 
-        ctx.beginPath();
-        ctx.arc(burnState.x, burnState.y, currentRad, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 3. Draw the burn edge with red/yellow colors
+        // 3. Draw the burn edges with red/yellow colors
         ctx.globalCompositeOperation = 'source-over';
 
-        // Only draw burn ring if actively hovering and spreading
-        if (isHovering && currentRad < maxRad) {
-            const edgeWidth = 40; // width of the burn ring
+        burns.forEach(b => {
+            if (b.radius >= maxRad) return; // Finished spreading
+
+            const edgeWidth = 40;
             const flicker = Math.random() * 10;
 
+            // To make the gradient follow the jagged path, we just fill the jagged path + flicker + edgeWidth
+            // Using a simple radial gradient is fine because the path defines the outer bounds
+
+            // Wait, if the hole is jagged, we want the fire to be immediately OUTSIDE the hole.
+            // If we fill a larger jagged path with a radial gradient, the gradient is circular but the shape is jagged. That works nicely.
+
             const grad = ctx.createRadialGradient(
-                burnState.x, burnState.y, Math.max(0, currentRad - edgeWidth),
-                burnState.x, burnState.y, currentRad + flicker
+                b.x, b.y, Math.max(0, b.radius - edgeWidth),
+                b.x, b.y, b.radius + flicker + 20
             );
 
-            // Outer ring: red
-            // Middle: red-yellow (orange)
-            grad.addColorStop(0, 'rgba(0, 0, 0, 0)');           // inner part of ring is clear
-            grad.addColorStop(0.3, 'rgba(0, 0, 0, 0.8)');       // black char near edge
-            grad.addColorStop(0.6, 'rgba(255, 0, 0, 0.8)');     // red
-            grad.addColorStop(0.8, 'rgba(255, 100, 0, 0.9)');   // red-yellow
-            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');           // fade out to nothing
+            grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            grad.addColorStop(0.3, 'rgba(0, 0, 0, 0.8)');
+            grad.addColorStop(0.6, 'rgba(255, 0, 0, 0.8)');
+            grad.addColorStop(0.8, 'rgba(255, 100, 0, 0.9)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
             ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(burnState.x, burnState.y, currentRad + flicker, 0, Math.PI * 2);
+            for (let i = 0; i <= 16; i++) {
+                const angle = (i % 16) * (Math.PI * 2) / 16;
+                const r = (b.radius * b.speeds[i % 16]) + flicker;
+                const px = b.x + Math.cos(angle) * r;
+                const py = b.y + Math.sin(angle) * r;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
             ctx.fill();
 
             // Draw random specks jumping ahead
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 20; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                // Specks jump ahead randomly
+                // find which speed multiplier corresponds to this angle roughly
+                const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
                 const jump = Math.random() * 30;
-                const r = currentRad + jump;
-                const ex = burnState.x + Math.cos(angle) * r;
-                const ey = burnState.y + Math.sin(angle) * r;
+                const r = (b.radius * b.speeds[slice]) + jump;
+                const ex = b.x + Math.cos(angle) * r;
+                const ey = b.y + Math.sin(angle) * r;
 
                 if (ex >= 0 && ey >= 0 && ex <= canvas.width && ey <= canvas.height) {
                     ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,0,0.8)' : 'rgba(255,150,0,0.9)';
@@ -2590,26 +2595,35 @@
                     ctx.fill();
                 }
             }
-        }
+        });
       }
 
       function animate(time) {
-        if (!burnState.active) return;
+        if (burns.length === 0) return;
 
-        if (isHovering) {
-            // Calculate radius based on time
-            const elapsed = time - burnState.startTime;
-            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+        let anyActive = false;
+        const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
 
-            // Linear expansion over 5 seconds
-            burnState.radius = (elapsed / BURN_DURATION) * maxRad;
-            if (burnState.radius > maxRad) burnState.radius = maxRad;
-        }
+        burns.forEach(b => {
+            const elapsed = time - b.startTime;
+            b.radius = (elapsed / BURN_DURATION) * maxRad;
+            if (b.radius > maxRad) {
+                b.radius = maxRad;
+            } else {
+                anyActive = true;
+            }
+        });
 
         drawBurn();
+
+        // Optimization: stop drawing if we're done expanding and not hovering
+        if (!anyActive && !isHovering) {
+            // We just wait for the timeout to trigger restoreAnim
+            return;
+        }
+
         animationId = requestAnimationFrame(animate);
       }
-
       canvas.addEventListener('mouseenter', (e) => {
         if (!window.isFireCursorActive) return;
 
@@ -2618,42 +2632,48 @@
             resetTimeoutId = null;
         }
 
-        // Cancel any running animations to prevent race conditions (like restoreAnim fighting animate)
         if (animationId) {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
 
+        isHovering = true;
         const rect = canvas.getBoundingClientRect();
 
-        // Start burn from mouse pos
-        if (!burnState.active) {
-            burnState = {
-                active: true,
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-                radius: 0,
-                startTime: performance.now()
-            };
-            isHovering = true;
-            animationId = requestAnimationFrame(animate);
-        } else {
-            // If already burning but was paused/resetting, just resume growing
-            // We need to adjust startTime so it resumes from current radius smoothly
-            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
-            const elapsedEquivalent = (burnState.radius / maxRad) * BURN_DURATION;
-            burnState.startTime = performance.now() - elapsedEquivalent;
-            isHovering = true;
-            animationId = requestAnimationFrame(animate);
-        }
+        // Spawn a new burn if empty or maybe just always spawn one?
+        // Wait, requirement: "start burn effect with hover from multiple points on Joseph Image... run into each other"
+        // Let's spawn a burn on mouseenter.
+        const speeds = [];
+        for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6); // Multipliers between 0.7 and 1.3
+
+        burns.push({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            radius: 0,
+            startTime: performance.now(),
+            speeds: speeds
+        });
+
+        animationId = requestAnimationFrame(animate);
       });
       
       canvas.addEventListener('mousemove', (e) => {
-         // Keep center tracking mouse? Requirement says "spread over the entire image from mouse hover".
-         // Usually that implies it starts from where you hovered and spreads. Let's keep the center static to where they entered, or update it?
-         // Let's keep it static to the entry point so it's a solid radial burn from one point.
-      });
+         if (!window.isFireCursorActive || !isHovering || restoreStartTime) return;
 
+         // Spawn new burns occasionally as the mouse moves
+         if (Math.random() > 0.8) {
+             const rect = canvas.getBoundingClientRect();
+             const speeds = [];
+             for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
+             burns.push({
+                 x: e.clientX - rect.left,
+                 y: e.clientY - rect.top,
+                 radius: 0,
+                 startTime: performance.now(),
+                 speeds: speeds
+             });
+         }
+      });
       let resetTimeoutId = null;
       const RESTORE_DURATION = 1000; // 1 sec to fade back
       let restoreStartTime = null;
@@ -2670,20 +2690,22 @@
             // After 10s, gradually change back to Joseph image
             restoreStartTime = performance.now();
 
-            // We'll fade the hole out
-            let startRad = burnState.radius;
+            // We'll shrink all burns
+            const startRadii = burns.map(b => b.radius);
             const restoreAnim = (t) => {
                 const elapsed = t - restoreStartTime;
-
-                // Gradually restore by shrinking the radius
                 let progress = elapsed / RESTORE_DURATION;
                 if (progress > 1) progress = 1;
 
-                burnState.radius = startRad * (1 - progress);
+                let anyAlive = false;
+                burns.forEach((b, i) => {
+                    b.radius = startRadii[i] * (1 - progress);
+                    if (b.radius > 0) anyAlive = true;
+                });
 
-                if (burnState.radius <= 0) {
-                    burnState.active = false;
-                    burnState.radius = 0;
+                if (!anyAlive) {
+                    burns = [];
+                    restoreStartTime = null;
                     drawPristine();
                     if (animationId) cancelAnimationFrame(animationId);
                     return;
