@@ -2637,22 +2637,33 @@
             animationId = null;
         }
 
+        restoreStartTime = null; // Fix: reset restore timer so mousemove can spawn new burns
         isHovering = true;
         const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
 
-        // Spawn a new burn if empty or maybe just always spawn one?
-        // Wait, requirement: "start burn effect with hover from multiple points on Joseph Image... run into each other"
-        // Let's spawn a burn on mouseenter.
-        const speeds = [];
-        for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6); // Multipliers between 0.7 and 1.3
+        let insideBurn = false;
+        for (let b of burns) {
+            const dist = Math.sqrt((mx - b.x)**2 + (my - b.y)**2);
+            if (dist < b.radius * 0.8) {
+                insideBurn = true;
+                break;
+            }
+        }
 
-        burns.push({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-            radius: 0,
-            startTime: performance.now(),
-            speeds: speeds
-        });
+        if (!insideBurn) {
+            const speeds = [];
+            for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6); // Multipliers between 0.7 and 1.3
+
+            burns.push({
+                x: mx,
+                y: my,
+                radius: 0,
+                startTime: performance.now(),
+                speeds: speeds
+            });
+        }
 
         animationId = requestAnimationFrame(animate);
       });
@@ -2660,14 +2671,31 @@
       canvas.addEventListener('mousemove', (e) => {
          if (!window.isFireCursorActive || !isHovering || restoreStartTime) return;
 
-         // Spawn new burns occasionally as the mouse moves
+         const rect = canvas.getBoundingClientRect();
+         const mx = e.clientX - rect.left;
+         const my = e.clientY - rect.top;
+
+         // Check if mouse is inside an already burning/burned hole
+         let insideBurn = false;
+         for (let b of burns) {
+             const dist = Math.sqrt((mx - b.x)**2 + (my - b.y)**2);
+             // Use an average radius or just the base radius. b.radius is the base radius before speeds multiplier
+             // Since speeds are between 0.7 and 1.3, we can conservatively use b.radius * 0.8
+             if (dist < b.radius * 0.8) {
+                 insideBurn = true;
+                 break;
+             }
+         }
+
+         if (insideBurn) return; // Don't burn area that is already burned!
+
+         // Spawn new burns occasionally as the mouse moves over unburned areas
          if (Math.random() > 0.8) {
-             const rect = canvas.getBoundingClientRect();
              const speeds = [];
              for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
              burns.push({
-                 x: e.clientX - rect.left,
-                 y: e.clientY - rect.top,
+                 x: mx,
+                 y: my,
                  radius: 0,
                  startTime: performance.now(),
                  speeds: speeds
