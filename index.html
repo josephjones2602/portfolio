@@ -2575,46 +2575,28 @@
         let anyActive = false;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
 
-        // Intersect logic
-        for (let i = 0; i < burns.length; i++) {
-            for (let j = i + 1; j < burns.length; j++) {
-                const b1 = burns[i];
-                const b2 = burns[j];
-                if (!b1.stopped || !b2.stopped) {
-                    const dist = Math.sqrt((b1.x - b2.x)**2 + (b1.y - b2.y)**2);
-                    if (dist <= (b1.radius + b2.radius) * 1.05) {
-                        b1.stopped = true;
-                        b2.stopped = true;
-                    }
-                }
-            }
-        }
+        // 3 seconds per inch. 1 CSS inch = 96 pixels on screen.
+        // We scale the 96 pixels to the internal canvas resolution.
+        const domToCanvasScale = canvas.width / container.clientWidth;
+        const pixelsPerMs = (96 * domToCanvasScale) / 3000;
 
         burns.forEach(b => {
-            if (!b.stopped) {
-                const elapsed = time - b.startTime;
-                b.radius = (elapsed / BURN_DURATION) * maxRad;
-                if (b.radius > maxRad) {
-                    b.radius = maxRad;
-                    b.stopped = true;
-                } else {
-                    anyActive = true;
-                }
-            } else if (b.radius < maxRad) {
-               // Even if stopped, count it as "active" in terms of preventing idle timeout?
-               // The user wants it to just stop and sit there.
-               // We will wait for mouseleave to reset.
-               // But if none are active and not hovering, loop stops.
+            const elapsed = time - b.startTime;
+            b.radius = elapsed * pixelsPerMs;
+            if (b.radius > maxRad) {
+                b.radius = maxRad;
+            } else {
+                anyActive = true;
             }
         });
 
-        // If there are stopped burns, we must keep rendering if they haven't maxed out?
-        // Wait, if they are stopped, their radius never changes.
-        // So we only need to keep the loop if any are NOT stopped (anyActive).
-
 
         drawBurn();
-        if (!anyActive && !isHovering) return;
+        if (!anyActive && !isHovering) {
+            // We just finished the burn and aren't hovering, start the 10s clock!
+            startResetTimer();
+            return;
+        }
         animationId = requestAnimationFrame(animate);
       }
 
@@ -2625,6 +2607,14 @@
       function startResetTimer() {
         if (resetTimeoutId) clearTimeout(resetTimeoutId);
         resetTimeoutId = setTimeout(() => {
+            // If any burn is still expanding, or we are hovering, wait another 10s
+            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+            let anyActive = burns.some(b => b.radius < maxRad);
+            if (anyActive || isHovering) {
+                startResetTimer();
+                return;
+            }
+
             restoreStartTime = performance.now();
             const startRadii = burns.map(b => b.radius);
             const restoreAnim = (t) => {
