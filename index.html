@@ -2495,21 +2495,12 @@
 
         if (burns.length === 0) return;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
-
-        ctx.globalCompositeOperation = 'destination-out';
-        burns.forEach(b => {
-            if (b.radius <= 0) return;
-            ctx.beginPath();
-            for (let i = 0; i <= 16; i++) {
-                const angle = (i % 16) * (Math.PI * 2) / 16;
-                const r = b.radius * b.speeds[i % 16];
-                const px = b.x + Math.cos(angle) * r;
-                const py = b.y + Math.sin(angle) * r;
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
-            }
-            ctx.fill();
-        });
+        const isFullyBurned = burns.some(b => b.radius >= maxRad);
+        if (isFullyBurned) {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
 
         ctx.globalCompositeOperation = 'source-over';
         burns.forEach(b => {
@@ -2526,13 +2517,18 @@
 
             ctx.fillStyle = grad;
             ctx.beginPath();
-            for (let i = 0; i <= 16; i++) {
-                const angle = (i % 16) * (Math.PI * 2) / 16;
-                const r = (b.radius * b.speeds[i % 16]) + flicker;
-                const px = b.x + Math.cos(angle) * r;
-                const py = b.y + Math.sin(angle) * r;
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
+            const fPts = [];
+            for (let i = 0; i < 16; i++) {
+                const angle = i * (Math.PI * 2) / 16;
+                const r = (b.radius * b.speeds[i]) + flicker;
+                fPts.push({ x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r });
+            }
+            ctx.moveTo((fPts[0].x + fPts[15].x) / 2, (fPts[0].y + fPts[15].y) / 2);
+            for (let i = 0; i < 16; i++) {
+                const nextI = (i + 1) % 16;
+                const xc = (fPts[i].x + fPts[nextI].x) / 2;
+                const yc = (fPts[i].y + fPts[nextI].y) / 2;
+                ctx.quadraticCurveTo(fPts[i].x, fPts[i].y, xc, yc);
             }
             ctx.fill();
 
@@ -2552,6 +2548,26 @@
                 }
             }
         });
+
+        ctx.globalCompositeOperation = 'destination-out';
+        burns.forEach(b => {
+            if (b.radius <= 0) return;
+            ctx.beginPath();
+            const pts = [];
+            for (let i = 0; i < 16; i++) {
+                const angle = i * (Math.PI * 2) / 16;
+                const r = b.radius * b.speeds[i];
+                pts.push({ x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r });
+            }
+            ctx.moveTo((pts[0].x + pts[15].x) / 2, (pts[0].y + pts[15].y) / 2);
+            for (let i = 0; i < 16; i++) {
+                const nextI = (i + 1) % 16;
+                const xc = (pts[i].x + pts[nextI].x) / 2;
+                const yc = (pts[i].y + pts[nextI].y) / 2;
+                ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+            }
+            ctx.fill();
+        });
       }
 
       function animate(time) {
@@ -2559,12 +2575,43 @@
         let anyActive = false;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
 
+        // Intersect logic
+        for (let i = 0; i < burns.length; i++) {
+            for (let j = i + 1; j < burns.length; j++) {
+                const b1 = burns[i];
+                const b2 = burns[j];
+                if (!b1.stopped || !b2.stopped) {
+                    const dist = Math.sqrt((b1.x - b2.x)**2 + (b1.y - b2.y)**2);
+                    if (dist <= (b1.radius + b2.radius) * 1.05) {
+                        b1.stopped = true;
+                        b2.stopped = true;
+                    }
+                }
+            }
+        }
+
         burns.forEach(b => {
-            const elapsed = time - b.startTime;
-            b.radius = (elapsed / BURN_DURATION) * maxRad;
-            if (b.radius > maxRad) b.radius = maxRad;
-            else anyActive = true;
+            if (!b.stopped) {
+                const elapsed = time - b.startTime;
+                b.radius = (elapsed / BURN_DURATION) * maxRad;
+                if (b.radius > maxRad) {
+                    b.radius = maxRad;
+                    b.stopped = true;
+                } else {
+                    anyActive = true;
+                }
+            } else if (b.radius < maxRad) {
+               // Even if stopped, count it as "active" in terms of preventing idle timeout?
+               // The user wants it to just stop and sit there.
+               // We will wait for mouseleave to reset.
+               // But if none are active and not hovering, loop stops.
+            }
         });
+
+        // If there are stopped burns, we must keep rendering if they haven't maxed out?
+        // Wait, if they are stopped, their radius never changes.
+        // So we only need to keep the loop if any are NOT stopped (anyActive).
+
 
         drawBurn();
         if (!anyActive && !isHovering) return;
@@ -2632,7 +2679,7 @@
         if (!insideBurn) {
             const speeds = [];
             for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-            burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
+            burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds, stopped: false });
         }
         animationId = requestAnimationFrame(animate);
       });
@@ -2663,7 +2710,7 @@
          if (Math.random() > 0.8) {
              const speeds = [];
              for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-             burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
+             burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds, stopped: false });
          }
       });
 
