@@ -2444,7 +2444,7 @@
       const img = document.getElementById('joseph-img');
       if (!canvas || !img || !container) return;
 
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const ctx = canvas.getContext('2d');
       let animationId = null;
       let isHovering = false;
       let burns = [];
@@ -2454,12 +2454,15 @@
 
 
       function resizeCanvas() {
+        // Optimization: Reduce resolution by factor of 3 to massively reduce pixel fill rate overhead
+        // while preserving exact aspect ratio so object-fit: cover lines it up perfectly.
+        const resolutionScale = 3;
         if (img.naturalWidth) {
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
+            canvas.width = Math.floor(img.naturalWidth / resolutionScale);
+            canvas.height = Math.floor(img.naturalHeight / resolutionScale);
         } else {
-            canvas.width = 1667;
-            canvas.height = 2500;
+            canvas.width = Math.floor(1667 / resolutionScale);
+            canvas.height = Math.floor(2500 / resolutionScale);
         }
         if (burns.length === 0) drawPristine();
         else drawBurn();
