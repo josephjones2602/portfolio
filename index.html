@@ -2482,7 +2482,7 @@
       }
 
       function drawBurn() {
-        const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+        const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         const isFullyBurned = burns.some(b => b.radius >= maxRad);
 
         ctx.globalCompositeOperation = 'source-over';
@@ -2572,7 +2572,7 @@
       function animate(time) {
         if (burns.length === 0) return;
         let anyActive = false;
-        const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+        const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         const domToCanvasScale = canvas.width / container.clientWidth;
         const pixelsPerMs = (96 * domToCanvasScale) / 3000;
 
@@ -2589,6 +2589,7 @@
         drawBurn();
         if (!anyActive && !isHovering) {
             startResetTimer();
+            animationId = null;
             return;
         }
         animationId = requestAnimationFrame(animate);
@@ -2601,7 +2602,7 @@
       function startResetTimer() {
         if (resetTimeoutId) clearTimeout(resetTimeoutId);
         resetTimeoutId = setTimeout(() => {
-            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+            const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
             let anyActive = burns.some(b => b.radius < maxRad);
             if (anyActive || isHovering) {
                 startResetTimer();
@@ -2625,7 +2626,7 @@
                     burns = [];
                     restoreStartTime = null;
                     drawPristine();
-                    if (animationId) cancelAnimationFrame(animationId);
+                    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
                     return;
                 }
 
@@ -2653,7 +2654,7 @@
         const my = (e.clientY - rect.top) * scaleY;
 
         let insideBurn = false;
-        const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+        const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         for (let b of burns) {
             if (b.radius >= maxRad) { insideBurn = true; break; }
             const angle = Math.atan2(my - b.y, mx - b.x);
@@ -2693,7 +2694,7 @@
          const my = (e.clientY - rect.top) * scaleY;
 
          let insideBurn = false;
-         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
          for (let b of burns) {
              if (b.radius >= maxRad) { insideBurn = true; break; }
              const angle = Math.atan2(my - b.y, mx - b.x);
