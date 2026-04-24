@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joseph Jones | Copywriter Portfolio</title>
+  <link rel="icon" type="image/png" href="static/icons/hydrant.png">
 
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
@@ -2450,29 +2451,16 @@
 
       const BURN_DURATION = 5000;
 
-      function drawImageCover(ctx, img, x, y, w, h) {
-        if (!img.complete || img.naturalWidth === 0) return;
-        const imgRatio = img.naturalWidth / img.naturalHeight;
-        const canvasRatio = w / h;
-        let drawW, drawH, drawX, drawY;
 
-        if (imgRatio < canvasRatio) {
-            drawW = w;
-            drawH = w / imgRatio;
-            drawX = 0;
-            drawY = (h - drawH) / 2;
-        } else {
-            drawH = h;
-            drawW = h * imgRatio;
-            drawY = 0;
-            drawX = (w - drawW) / 2;
-        }
-        ctx.drawImage(img, drawX + x, drawY + y, drawW, drawH);
-      }
 
       function resizeCanvas() {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
+        if (img.naturalWidth) {
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+        } else {
+            canvas.width = 1667;
+            canvas.height = 2500;
+        }
         if (burns.length === 0) drawPristine();
         else drawBurn();
       }
@@ -2485,17 +2473,24 @@
       function drawPristine() {
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawImageCover(ctx, img, 0, 0, canvas.width, canvas.height);
+        if (img.complete && img.naturalWidth > 0) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
       }
 
       function drawBurn() {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawImageCover(ctx, img, 0, 0, canvas.width, canvas.height);
-
-        if (burns.length === 0) return;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
         const isFullyBurned = burns.some(b => b.radius >= maxRad);
+
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (!isFullyBurned && img.complete && img.naturalWidth > 0) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+
+        if (burns.length === 0) return;
+
         if (isFullyBurned) {
             ctx.globalCompositeOperation = 'destination-out';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -2505,9 +2500,10 @@
         ctx.globalCompositeOperation = 'source-over';
         burns.forEach(b => {
             if (b.radius >= maxRad) return;
-            const edgeWidth = 40;
-            const flicker = Math.random() * 10;
-            const grad = ctx.createRadialGradient(b.x, b.y, Math.max(0, b.radius - edgeWidth), b.x, b.y, b.radius + flicker + 20);
+            const scale = canvas.width / 300;
+            const edgeWidth = 40 * scale;
+            const flicker = Math.random() * 10 * scale;
+            const grad = ctx.createRadialGradient(b.x, b.y, Math.max(0, b.radius - edgeWidth), b.x, b.y, b.radius + flicker + (20 * scale));
 
             grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
             grad.addColorStop(0.3, 'rgba(0, 0, 0, 0.8)');
@@ -2535,7 +2531,7 @@
             for (let i = 0; i < 20; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
-                const jump = Math.random() * 30;
+                const jump = Math.random() * 30 * scale;
                 const r = (b.radius * b.speeds[slice]) + jump;
                 const ex = b.x + Math.cos(angle) * r;
                 const ey = b.y + Math.sin(angle) * r;
@@ -2543,7 +2539,7 @@
                 if (ex >= 0 && ey >= 0 && ex <= canvas.width && ey <= canvas.height) {
                     ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,0,0.8)' : 'rgba(255,150,0,0.9)';
                     ctx.beginPath();
-                    ctx.arc(ex, ey, Math.random() * 3 + 1, 0, Math.PI * 2);
+                    ctx.arc(ex, ey, (Math.random() * 3 + 1) * scale, 0, Math.PI * 2);
                     ctx.fill();
                 }
             }
@@ -2574,9 +2570,6 @@
         if (burns.length === 0) return;
         let anyActive = false;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
-
-        // 3 seconds per inch. 1 CSS inch = 96 pixels on screen.
-        // We scale the 96 pixels to the internal canvas resolution.
         const domToCanvasScale = canvas.width / container.clientWidth;
         const pixelsPerMs = (96 * domToCanvasScale) / 3000;
 
@@ -2590,10 +2583,8 @@
             }
         });
 
-
         drawBurn();
         if (!anyActive && !isHovering) {
-            // We just finished the burn and aren't hovering, start the 10s clock!
             startResetTimer();
             return;
         }
@@ -2607,7 +2598,6 @@
       function startResetTimer() {
         if (resetTimeoutId) clearTimeout(resetTimeoutId);
         resetTimeoutId = setTimeout(() => {
-            // If any burn is still expanding, or we are hovering, wait another 10s
             const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
             let anyActive = burns.some(b => b.radius < maxRad);
             if (anyActive || isHovering) {
@@ -2621,6 +2611,7 @@
                 const elapsed = t - restoreStartTime;
                 let progress = elapsed / RESTORE_DURATION;
                 if (progress > 1) progress = 1;
+
                 let anyAlive = false;
                 burns.forEach((b, i) => {
                     b.radius = startRadii[i] * (1 - progress);
@@ -2634,11 +2625,14 @@
                     if (animationId) cancelAnimationFrame(animationId);
                     return;
                 }
+
                 drawBurn();
                 animationId = requestAnimationFrame(restoreAnim);
             };
+
             if (animationId) cancelAnimationFrame(animationId);
             animationId = requestAnimationFrame(restoreAnim);
+
         }, 10000);
       }
 
@@ -2650,8 +2644,10 @@
         startResetTimer();
 
         const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        const my = e.clientY - rect.top;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
 
         let insideBurn = false;
         const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
@@ -2669,8 +2665,17 @@
         if (!insideBurn) {
             const speeds = [];
             for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-            burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds, stopped: false });
+            burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
         }
+
+        const domToCanvasScale = canvas.width / container.clientWidth;
+        const pixelsPerMs = (96 * domToCanvasScale) / 3000;
+        const now = performance.now();
+        burns.forEach(b => {
+            const elapsedEquivalent = b.radius / pixelsPerMs;
+            b.startTime = now - elapsedEquivalent;
+        });
+
         animationId = requestAnimationFrame(animate);
       });
       
@@ -2679,8 +2684,10 @@
          startResetTimer();
 
          const rect = canvas.getBoundingClientRect();
-         const mx = e.clientX - rect.left;
-         const my = e.clientY - rect.top;
+         const scaleX = canvas.width / rect.width;
+         const scaleY = canvas.height / rect.height;
+         const mx = (e.clientX - rect.left) * scaleX;
+         const my = (e.clientY - rect.top) * scaleY;
 
          let insideBurn = false;
          const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
@@ -2700,7 +2707,7 @@
          if (Math.random() > 0.8) {
              const speeds = [];
              for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-             burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds, stopped: false });
+             burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
          }
       });
 
