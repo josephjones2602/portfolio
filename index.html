@@ -2609,35 +2609,15 @@
                 return;
             }
 
-            restoreStartTime = performance.now();
-            const startRadii = burns.map(b => b.radius);
-            const restoreAnim = (t) => {
-                const elapsed = t - restoreStartTime;
-                let progress = elapsed / RESTORE_DURATION;
-                if (progress > 1) progress = 1;
+            // "Don't show the Joseph image until after the Skeleton image resets."
+            // "Make the time shorter for the reset, just 3 seconds."
+            // Remove the reverse-shrinking animation completely. Just instantly reset after 3s.
+            burns = [];
+            restoreStartTime = null;
+            drawPristine();
+            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
 
-                let anyAlive = false;
-                burns.forEach((b, i) => {
-                    b.radius = startRadii[i] * (1 - progress);
-                    if (b.radius > 0) anyAlive = true;
-                });
-
-                if (!anyAlive || progress >= 1) {
-                    burns = [];
-                    restoreStartTime = null;
-                    drawPristine();
-                    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-                    return;
-                }
-
-                drawBurn();
-                animationId = requestAnimationFrame(restoreAnim);
-            };
-
-            if (animationId) cancelAnimationFrame(animationId);
-            animationId = requestAnimationFrame(restoreAnim);
-
-        }, 10000);
+        }, 3000);
       }
 
       canvas.addEventListener('mouseenter', (e) => {
