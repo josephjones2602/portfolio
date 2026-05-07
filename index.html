@@ -2587,71 +2587,91 @@
         });
 
         drawBurn();
-        if (!anyActive && !isHovering) {
-            startResetTimer();
+
+        checkReset();
+
+        if (burns.length === 0) {
             animationId = null;
             return;
         }
+
         animationId = requestAnimationFrame(animate);
       }
 
       let resetTimeoutId = null;
-      const RESTORE_DURATION = 1000;
-      let restoreStartTime = null;
 
-      function startResetTimer() {
-        if (resetTimeoutId) clearTimeout(resetTimeoutId);
-        resetTimeoutId = setTimeout(() => {
-            const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
+      function checkReset() {
+        // If image is fully burned (no active burns, but we do have burns)
+        if (burns.length > 0) {
+            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
             let anyActive = burns.some(b => b.radius < maxRad);
-            if (anyActive || isHovering) {
-                startResetTimer();
-                return;
+
+            // If fully burned, start the 3s reset timer if not already started
+            if (!anyActive) {
+                if (!resetTimeoutId) {
+                    resetTimeoutId = setTimeout(() => {
+                        // 3 seconds passed since fully burned! Reset!
+                        burns = [];
+                        drawPristine();
+                        resetTimeoutId = null;
+
+                        // If they are still hovering, we should trigger a new burn automatically!
+                        // We can just simulate a mouseenter event or just spawn a burn if mouse is over.
+                        // Actually, the easiest way is to let the next mousemove catch it, or just spawn it here.
+                        if (isHovering && lastMouseX !== null && lastMouseY !== null) {
+                            spawnBurn(lastMouseX, lastMouseY);
+                        }
+                    }, 3000);
+                }
+            } else {
+                // Not fully burned yet. Clear timer if it was running.
+                if (resetTimeoutId) {
+                    clearTimeout(resetTimeoutId);
+                    resetTimeoutId = null;
+                }
             }
+        }
+      }
 
-            // "Don't show the Joseph image until after the Skeleton image resets."
-            // "Make the time shorter for the reset, just 3 seconds."
-            // Remove the reverse-shrinking animation completely. Just instantly reset after 3s.
-            burns = [];
-            restoreStartTime = null;
-            drawPristine();
-            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+      let lastMouseX = null;
+      let lastMouseY = null;
 
-        }, 3000);
+      function spawnBurn(mx, my) {
+          // Check collision
+          let insideBurn = false;
+          const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+          for (let b of burns) {
+              if (b.radius >= maxRad) { insideBurn = true; break; }
+              const angle = Math.atan2(my - b.y, mx - b.x);
+              let normAngle = angle;
+              if (normAngle < 0) normAngle += Math.PI * 2;
+              const slice = Math.floor((normAngle / (Math.PI * 2)) * 16) % 16;
+              if (Math.sqrt((mx - b.x)**2 + (my - b.y)**2) < b.radius * b.speeds[slice]) {
+                  insideBurn = true;
+                  break;
+              }
+          }
+          if (!insideBurn) {
+              const speeds = [];
+              for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
+              burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
+
+              if (!animationId) animationId = requestAnimationFrame(animate);
+          }
       }
 
       canvas.addEventListener('mouseenter', (e) => {
         if (!window.isFireCursorActive) return;
-        if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-        restoreStartTime = null;
         isHovering = true;
-        startResetTimer();
-
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-        const mx = (e.clientX - rect.left) * scaleX;
-        const my = (e.clientY - rect.top) * scaleY;
+        lastMouseX = (e.clientX - rect.left) * scaleX;
+        lastMouseY = (e.clientY - rect.top) * scaleY;
 
-        let insideBurn = false;
-        const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
-        for (let b of burns) {
-            if (b.radius >= maxRad) { insideBurn = true; break; }
-            const angle = Math.atan2(my - b.y, mx - b.x);
-            let normAngle = angle;
-            if (normAngle < 0) normAngle += Math.PI * 2;
-            const slice = Math.floor((normAngle / (Math.PI * 2)) * 16) % 16;
-            const actualRadius = b.radius * b.speeds[slice];
-            const dist = Math.sqrt((mx - b.x)**2 + (my - b.y)**2);
-            if (dist < actualRadius) { insideBurn = true; break; }
-        }
+        spawnBurn(lastMouseX, lastMouseY);
 
-        if (!insideBurn) {
-            const speeds = [];
-            for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-            burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
-        }
-
+        // Fix startTime for existing burns so they don't pop
         const domToCanvasScale = canvas.width / container.clientWidth;
         const pixelsPerMs = (96 * domToCanvasScale) / 3000;
         const now = performance.now();
@@ -2659,45 +2679,26 @@
             const elapsedEquivalent = b.radius / pixelsPerMs;
             b.startTime = now - elapsedEquivalent;
         });
-
-        animationId = requestAnimationFrame(animate);
       });
       
       canvas.addEventListener('mousemove', (e) => {
-         if (!window.isFireCursorActive || !isHovering || restoreStartTime) return;
-         startResetTimer();
+         if (!window.isFireCursorActive || !isHovering) return;
 
          const rect = canvas.getBoundingClientRect();
          const scaleX = canvas.width / rect.width;
          const scaleY = canvas.height / rect.height;
-         const mx = (e.clientX - rect.left) * scaleX;
-         const my = (e.clientY - rect.top) * scaleY;
-
-         let insideBurn = false;
-         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
-         for (let b of burns) {
-             if (b.radius >= maxRad) { insideBurn = true; break; }
-             const angle = Math.atan2(my - b.y, mx - b.x);
-             let normAngle = angle;
-             if (normAngle < 0) normAngle += Math.PI * 2;
-             const slice = Math.floor((normAngle / (Math.PI * 2)) * 16) % 16;
-             const actualRadius = b.radius * b.speeds[slice];
-             const dist = Math.sqrt((mx - b.x)**2 + (my - b.y)**2);
-             if (dist < actualRadius) { insideBurn = true; break; }
-         }
-
-         if (insideBurn) return;
+         lastMouseX = (e.clientX - rect.left) * scaleX;
+         lastMouseY = (e.clientY - rect.top) * scaleY;
 
          if (Math.random() > 0.8) {
-             const speeds = [];
-             for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-             burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
+             spawnBurn(lastMouseX, lastMouseY);
          }
       });
 
       canvas.addEventListener('mouseleave', () => {
         isHovering = false;
-        startResetTimer();
+        lastMouseX = null;
+        lastMouseY = null;
       });
 
     });
