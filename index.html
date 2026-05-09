@@ -2481,6 +2481,21 @@
         }
       }
 
+      function buildJaggedPath(ctx, b, radiusOffset) {
+          ctx.beginPath();
+          const pts = [];
+          for (let i = 0; i < 16; i++) {
+              const angle = i * (Math.PI * 2) / 16;
+              const r = (b.radius * b.speeds[i]) + radiusOffset;
+              pts.push({ x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r });
+          }
+          ctx.moveTo((pts[0].x + pts[15].x) / 2, (pts[0].y + pts[15].y) / 2);
+          for (let i = 0; i < 16; i++) {
+              const nextI = (i + 1) % 16;
+              ctx.quadraticCurveTo(pts[i].x, pts[i].y, (pts[i].x + pts[nextI].x) / 2, (pts[i].y + pts[nextI].y) / 2);
+          }
+      }
+
       function drawBurn() {
         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         const isFullyBurned = burns.some(b => b.radius >= maxRad);
@@ -2500,13 +2515,14 @@
             return;
         }
 
+        const scale = canvas.width / 300;
+
+        // 1. Draw fire rings
         ctx.globalCompositeOperation = 'source-over';
         burns.forEach(b => {
             if (b.radius >= maxRad) return;
-            const scale = canvas.width / 300;
-            const edgeWidth = 40 * scale;
             const flicker = Math.random() * 10 * scale;
-            const grad = ctx.createRadialGradient(b.x, b.y, Math.max(0, b.radius - edgeWidth), b.x, b.y, b.radius + flicker + (20 * scale));
+            const grad = ctx.createRadialGradient(b.x, b.y, Math.max(0, b.radius - 40 * scale), b.x, b.y, b.radius + flicker + 20 * scale);
 
             grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
             grad.addColorStop(0.3, 'rgba(0, 0, 0, 0.8)');
@@ -2515,27 +2531,14 @@
             grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
             ctx.fillStyle = grad;
-            ctx.beginPath();
-            const fPts = [];
-            for (let i = 0; i < 16; i++) {
-                const angle = i * (Math.PI * 2) / 16;
-                const r = (b.radius * b.speeds[i]) + flicker;
-                fPts.push({ x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r });
-            }
-            ctx.moveTo((fPts[0].x + fPts[15].x) / 2, (fPts[0].y + fPts[15].y) / 2);
-            for (let i = 0; i < 16; i++) {
-                const nextI = (i + 1) % 16;
-                const xc = (fPts[i].x + fPts[nextI].x) / 2;
-                const yc = (fPts[i].y + fPts[nextI].y) / 2;
-                ctx.quadraticCurveTo(fPts[i].x, fPts[i].y, xc, yc);
-            }
+            buildJaggedPath(ctx, b, flicker);
             ctx.fill();
 
+            // Random specks
             for (let i = 0; i < 20; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
-                const jump = Math.random() * 30 * scale;
-                const r = (b.radius * b.speeds[slice]) + jump;
+                const r = (b.radius * b.speeds[slice]) + (Math.random() * 30 * scale);
                 const ex = b.x + Math.cos(angle) * r;
                 const ey = b.y + Math.sin(angle) * r;
 
@@ -2548,27 +2551,14 @@
             }
         });
 
+        // 2. Erase holes
         ctx.globalCompositeOperation = 'destination-out';
         burns.forEach(b => {
             if (b.radius <= 0) return;
-            ctx.beginPath();
-            const pts = [];
-            for (let i = 0; i < 16; i++) {
-                const angle = i * (Math.PI * 2) / 16;
-                const r = b.radius * b.speeds[i];
-                pts.push({ x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r });
-            }
-            ctx.moveTo((pts[0].x + pts[15].x) / 2, (pts[0].y + pts[15].y) / 2);
-            for (let i = 0; i < 16; i++) {
-                const nextI = (i + 1) % 16;
-                const xc = (pts[i].x + pts[nextI].x) / 2;
-                const yc = (pts[i].y + pts[nextI].y) / 2;
-                ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
-            }
+            buildJaggedPath(ctx, b, 0);
             ctx.fill();
         });
       }
-
       function animate(time) {
         if (burns.length === 0) {
             animationId = null;
@@ -2604,26 +2594,23 @@
       let resetTimeoutId = null;
 
       function checkReset() {
-        // If image is fully burned (no active burns, but we do have burns)
         if (burns.length > 0) {
             const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
             let anyActive = burns.some(b => b.radius < maxRad);
 
-            // If fully burned, start the 3s reset timer if not already started
             if (!anyActive) {
                 if (!resetTimeoutId) {
                     resetTimeoutId = setTimeout(() => {
-                        // 3 seconds passed since fully burned! Reset!
                         burns = [];
                         drawPristine();
                         resetTimeoutId = null;
 
-                        // We don't auto-spawn. Wait for them to move the mouse to trigger it again!
-                        // This prevents it from instantly reverting to the skeleton image if they are just resting the cursor.
+                        if (isHovering && lastMouseX !== null && lastMouseY !== null) {
+                            spawnBurn(lastMouseX, lastMouseY);
+                        }
                     }, 3000);
                 }
             } else {
-                // Not fully burned yet. Clear timer if it was running.
                 if (resetTimeoutId) {
                     clearTimeout(resetTimeoutId);
                     resetTimeoutId = null;
@@ -2636,58 +2623,44 @@
       let lastMouseY = null;
 
       function spawnBurn(mx, my) {
-          // Check collision
-          let insideBurn = false;
           const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
-          for (let b of burns) {
-              if (b.radius >= maxRad) { insideBurn = true; break; }
-              const angle = Math.atan2(my - b.y, mx - b.x);
-              let normAngle = angle;
-              if (normAngle < 0) normAngle += Math.PI * 2;
-              const slice = Math.floor((normAngle / (Math.PI * 2)) * 16) % 16;
-              if (Math.sqrt((mx - b.x)**2 + (my - b.y)**2) < b.radius * b.speeds[slice]) {
-                  insideBurn = true;
-                  break;
-              }
-          }
-          if (!insideBurn) {
-              const speeds = [];
-              for (let i = 0; i < 16; i++) speeds.push(0.7 + Math.random() * 0.6);
-              burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds: speeds });
+          let insideBurn = burns.some(b => {
+              if (b.radius >= maxRad) return true;
+              const angle = (Math.atan2(my - b.y, mx - b.x) + Math.PI * 2) % (Math.PI * 2);
+              const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
+              const actualRadius = b.radius * b.speeds[slice];
+              return Math.sqrt((mx - b.x)**2 + (my - b.y)**2) < actualRadius;
+          });
 
+          if (!insideBurn) {
+              const speeds = Array.from({length: 16}, () => 0.7 + Math.random() * 0.6);
+              burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds });
               if (!animationId) animationId = requestAnimationFrame(animate);
           }
       }
 
       canvas.addEventListener('mouseenter', (e) => {
         if (!window.isFireCursorActive) return;
+        if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
         isHovering = true;
+
         const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        lastMouseX = (e.clientX - rect.left) * scaleX;
-        lastMouseY = (e.clientY - rect.top) * scaleY;
+        lastMouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        lastMouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
         spawnBurn(lastMouseX, lastMouseY);
 
-        // Fix startTime for existing burns so they don't pop
-        const domToCanvasScale = canvas.width / container.clientWidth;
-        const pixelsPerMs = (96 * domToCanvasScale) / 3000;
+        const pixelsPerMs = (96 * (canvas.width / container.clientWidth)) / 3000;
         const now = performance.now();
-        burns.forEach(b => {
-            const elapsedEquivalent = b.radius / pixelsPerMs;
-            b.startTime = now - elapsedEquivalent;
-        });
+        burns.forEach(b => { b.startTime = now - (b.radius / pixelsPerMs); });
       });
       
       canvas.addEventListener('mousemove', (e) => {
          if (!window.isFireCursorActive || !isHovering) return;
 
          const rect = canvas.getBoundingClientRect();
-         const scaleX = canvas.width / rect.width;
-         const scaleY = canvas.height / rect.height;
-         lastMouseX = (e.clientX - rect.left) * scaleX;
-         lastMouseY = (e.clientY - rect.top) * scaleY;
+         lastMouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+         lastMouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
          if (burns.length === 0 || Math.random() > 0.8) {
              spawnBurn(lastMouseX, lastMouseY);
