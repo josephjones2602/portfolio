@@ -2571,8 +2571,7 @@
 
         burns.forEach(b => {
             const elapsed = time - b.startTime;
-            b.radius = Math.max(0, elapsed * pixelsPerMs);
-            if (b.radius > maxRad) {
+            b.radius = Math.max(0, elapsed * pixelsPerMs);             if (b.radius > maxRad) {
                 b.radius = maxRad;
             } else {
                 anyActive = true;
