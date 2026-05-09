@@ -2570,7 +2570,10 @@
       }
 
       function animate(time) {
-        if (burns.length === 0) return;
+        if (burns.length === 0) {
+            animationId = null;
+            return;
+        }
         let anyActive = false;
         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         const domToCanvasScale = canvas.width / container.clientWidth;
@@ -2578,7 +2581,7 @@
 
         burns.forEach(b => {
             const elapsed = time - b.startTime;
-            b.radius = elapsed * pixelsPerMs;
+            b.radius = Math.max(0, elapsed * pixelsPerMs);
             if (b.radius > maxRad) {
                 b.radius = maxRad;
             } else {
@@ -2603,7 +2606,7 @@
       function checkReset() {
         // If image is fully burned (no active burns, but we do have burns)
         if (burns.length > 0) {
-            const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+            const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
             let anyActive = burns.some(b => b.radius < maxRad);
 
             // If fully burned, start the 3s reset timer if not already started
@@ -2615,12 +2618,8 @@
                         drawPristine();
                         resetTimeoutId = null;
 
-                        // If they are still hovering, we should trigger a new burn automatically!
-                        // We can just simulate a mouseenter event or just spawn a burn if mouse is over.
-                        // Actually, the easiest way is to let the next mousemove catch it, or just spawn it here.
-                        if (isHovering && lastMouseX !== null && lastMouseY !== null) {
-                            spawnBurn(lastMouseX, lastMouseY);
-                        }
+                        // We don't auto-spawn. Wait for them to move the mouse to trigger it again!
+                        // This prevents it from instantly reverting to the skeleton image if they are just resting the cursor.
                     }, 3000);
                 }
             } else {
@@ -2639,7 +2638,7 @@
       function spawnBurn(mx, my) {
           // Check collision
           let insideBurn = false;
-          const maxRad = Math.max(canvas.width, canvas.height) * 1.5;
+          const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
           for (let b of burns) {
               if (b.radius >= maxRad) { insideBurn = true; break; }
               const angle = Math.atan2(my - b.y, mx - b.x);
@@ -2690,7 +2689,7 @@
          lastMouseX = (e.clientX - rect.left) * scaleX;
          lastMouseY = (e.clientY - rect.top) * scaleY;
 
-         if (Math.random() > 0.8) {
+         if (burns.length === 0 || Math.random() > 0.8) {
              spawnBurn(lastMouseX, lastMouseY);
          }
       });
