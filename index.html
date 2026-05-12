@@ -2508,7 +2508,7 @@
 
       function drawBurn() {
         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
-        const isFullyBurned = burns.some(b => b.radius >= maxRad);
+        const isFullyBurned = burns.length > 0 && burns.every(b => b.radius >= maxRad);
 
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2569,7 +2569,7 @@
             ctx.fill();
         });
       }
-      function animate(time) {
+      function animate() {
         if (burns.length === 0) {
             animationId = null;
             return;
@@ -2578,9 +2578,10 @@
         const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
         const domToCanvasScale = canvas.width / container.clientWidth;
         const pixelsPerMs = (96 * domToCanvasScale) / 3000;
+        const now = performance.now();
 
         burns.forEach(b => {
-            const elapsed = time - b.startTime;
+            const elapsed = now - b.startTime;
             b.radius = Math.max(0, elapsed * pixelsPerMs);             if (b.radius > maxRad) {
                 b.radius = maxRad;
             } else {
@@ -2614,6 +2615,11 @@
                         drawPristine();
                         resetTimeoutId = null;
 
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                            animationId = null;
+                        }
+
                         if (isHovering && lastMouseX !== null && lastMouseY !== null) {
                             spawnBurn(lastMouseX, lastMouseY);
                         }
@@ -2632,20 +2638,9 @@
       let lastMouseY = null;
 
       function spawnBurn(mx, my) {
-          const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
-          let insideBurn = burns.some(b => {
-              if (b.radius >= maxRad) return true;
-              const angle = (Math.atan2(my - b.y, mx - b.x) + Math.PI * 2) % (Math.PI * 2);
-              const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
-              const actualRadius = b.radius * b.speeds[slice];
-              return Math.sqrt((mx - b.x)**2 + (my - b.y)**2) < actualRadius;
-          });
-
-          if (!insideBurn) {
-              const speeds = Array.from({length: 16}, () => 0.7 + Math.random() * 0.6);
-              burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds });
-              if (!animationId) animationId = requestAnimationFrame(animate);
-          }
+          const speeds = Array.from({length: 16}, () => 0.7 + Math.random() * 0.6);
+          burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds });
+          if (!animationId) animationId = requestAnimationFrame(animate);
       }
 
       canvas.addEventListener('mouseenter', (e) => {
@@ -2671,7 +2666,7 @@
          lastMouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
          lastMouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-         if (burns.length === 0 || Math.random() > 0.8) {
+         if (Math.random() > 0.8) {
              spawnBurn(lastMouseX, lastMouseY);
          }
       });
