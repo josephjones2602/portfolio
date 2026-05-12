@@ -854,6 +854,20 @@
       transform: scale(1.05);
     }
 
+    .audio-player {
+      padding: 10px 0;
+    }
+
+    .audio-player audio {
+      width: 100%;
+    }
+
+    .credits {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
     /* ================== PROD MEDIA ELEMENT ================== */
 
     #prod-media-element {
@@ -1473,17 +1487,32 @@
 
       </div>
     </div>
-     <div class="ads">
+
+    <div class="ads">
       <div class="ad-card">
         <h4>Radio Spot</h4>
-        <div class="image-group"
-          onclick="openImage(
-            ['static/images/Patagonia360/tv.png'],
-            'static/images/MiniWheats/MiniWheatRadio.mp3',
-            ['Copywriter: Joseph Jones · Copywriter: Sarah Seaman'])">
-          <img src="static/images/Patagonia360/radio.png" class="image-preview">
+
+        <div class="audio-player">
+          <audio controls>
+            <source src="static/images/MiniWheats/MiniWheatRadio.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+
+          <p class="credits">
+            Copywriter: Joseph Jones · Copywriter: Sarah Seaman
+          </p>
         </div>
+
       </div>
+    </div>
+
+    <div class="campaign-hero" style="margin-top:2em">
+      <img src="static/images/MiniWheats/Mini-Wheat Position Filled.png" alt="MiniWheat in Chair">
+    </div>
+
+    <div class="img-credits">
+      <p>Copywriter: Joseph Jones</p>
+    </div>
   </section>
 
   <section id="print-campaign">
