@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joseph Jones | Copywriter Portfolio</title>
-  <link rel="icon" type="image/png" href="static/icons/hydrant.png">
+  <link rel="icon" type="image/jpeg" href="static/icons/Flaming Favicon.svg">
 
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
@@ -1439,10 +1439,9 @@
       </div>
       <div class="bio-text">
         <p>
-          I like to set people on fire. That's why I choose
-          advertising; setting other people on fire also sets me on fire.
-          <br><br>I’m from Eagle Mountain, Utah. I enjoy singing, dancing, and acting. <br><br>
-          I’m always looking for ways to improve or collaborate, so reach out!
+          I set people on fire. And those screams, delighted screams, set me on fire, too.
+          <br><br>I’m from Eagle Mountain, Utah. In my free time I sing, dance, and act. <br><br>
+          Shoot me! A message, I mean.
         </p>
         <a href="#contact" class="resume-btn" target="_blank">Contact Me</a>
       </div>
@@ -1458,7 +1457,7 @@
         
         <div class="ad-card" style="width: 100%; max-width: 800px; text-align: center;">
           <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
-            Oops, that mockup looks a little empty. Quick, it's the boss! Fill it with some Mini-Wheats!
+            Oops, that mockup looks a little empty. Fill it with some Mini-Wheats before the Boss gets back!
           </p>
           
           <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2rem;">
@@ -1474,6 +1473,17 @@
 
       </div>
     </div>
+     <div class="ads">
+      <div class="ad-card">
+        <h4>Radio Spot</h4>
+        <div class="audio-container" style="margin-top: 1rem; width: 100%;">
+          <audio controls style="width: 100%; border-radius: 8px; filter: invert(0.8) hue-rotate(180deg) brightness(1.2);">
+            <source src="static/images/MiniWheats/MiniWheatRadio.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">Copywriter: Joseph Jones · Copywriter: Sarah Seaman</p>
+      </div>
   </section>
 
   <section id="print-campaign">
@@ -2628,9 +2638,20 @@
       let lastMouseY = null;
 
       function spawnBurn(mx, my) {
-          const speeds = Array.from({length: 16}, () => 0.7 + Math.random() * 0.6);
-          burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds });
-          if (!animationId) animationId = requestAnimationFrame(animate);
+          const maxRad = Math.max(canvas.width, canvas.height) * 2.5;
+          let insideBurn = burns.some(b => {
+              if (b.radius >= maxRad) return true;
+              const angle = (Math.atan2(my - b.y, mx - b.x) + Math.PI * 2) % (Math.PI * 2);
+              const slice = Math.floor((angle / (Math.PI * 2)) * 16) % 16;
+              const actualRadius = b.radius * b.speeds[slice];
+              return Math.sqrt((mx - b.x)**2 + (my - b.y)**2) < actualRadius;
+          });
+
+          if (!insideBurn) {
+              const speeds = Array.from({length: 16}, () => 0.7 + Math.random() * 0.6);
+              burns.push({ x: mx, y: my, radius: 0, startTime: performance.now(), speeds });
+              if (!animationId) animationId = requestAnimationFrame(animate);
+          }
       }
 
       canvas.addEventListener('mouseenter', (e) => {
